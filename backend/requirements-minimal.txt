@@ -1,0 +1,16 @@
+# Minimal StadiumVerse AI V2 Dependencies for Quick Setup
+
+# Core FastAPI
+fastapi
+uvicorn[standard]
+python-multipart
+
+# AI Client
+httpx
+aiohttp
+
+# Configuration
+python-dotenv
+
+# Data validation
+pydantic

@@ -1,0 +1,1 @@
+# StadiumVerse AI V2 Application Package

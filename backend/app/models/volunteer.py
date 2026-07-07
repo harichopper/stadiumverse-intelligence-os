@@ -1,14 +1,14 @@
 """
 StadiumVerse AI - Volunteer Models
-Models for volunteer management and task coordination
+Models for volunteer management and task coordination at FIFA World Cup 2026.
 """
 
 import enum
 import uuid
+from datetime import datetime, timezone
 
-from geoalchemy2 import Geometry
 from sqlalchemy import (
-    ARRAY,
+    JSON,
     Boolean,
     Column,
     DateTime,
@@ -18,11 +18,19 @@ from sqlalchemy import (
     String,
     Text,
 )
-from sqlalchemy.dialects.postgresql import ENUM, UUID
 from sqlalchemy.orm import relationship
-from sqlalchemy.sql import func
 
 from ..database import Base
+
+
+def _now() -> datetime:
+    """Return timezone-aware current UTC time."""
+    return datetime.now(timezone.utc)
+
+def _uid() -> str:
+    """Return a new UUID string for primary keys."""
+    return str(uuid.uuid4())
+
 
 
 class VolunteerSkill(str, enum.Enum):
@@ -63,23 +71,23 @@ class Volunteer(Base):
     __tablename__ = "volunteers"
 
     # Primary identification
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(String(36), primary_key=True, default=_uid)
     volunteer_id = Column(
         String(20), unique=True, nullable=False, index=True
     )  # V001, V002, etc.
     name = Column(String(100), nullable=False)
 
     # Skills and capabilities
-    languages = Column(ARRAY(String), nullable=False, default=[])
-    skills = Column(ARRAY(ENUM(VolunteerSkill)), default=[])
+    languages = Column(JSON, nullable=False, default=[])
+    skills = Column(JSON, default=[])
     medical_training = Column(Boolean, default=False)
 
     # Location and assignment
-    current_location = Column(Geometry("POINT", srid=4326))
+    current_location = Column(String)
     availability_status = Column(
         ENUM(VolunteerStatus), default=VolunteerStatus.AVAILABLE
     )
-    zone_assignment = Column(UUID(as_uuid=True), ForeignKey("stadium_zones.id"))
+    zone_assignment = Column(String(36), ForeignKey("stadium_zones.id"))
 
     # Schedule
     shift_start = Column(DateTime(timezone=True))
@@ -91,9 +99,9 @@ class Volunteer(Base):
     satisfaction_rating = Column(Float)  # 1.0-5.0
 
     # Metadata
-    created_at = Column(DateTime(timezone=True), default=func.now())
+    created_at = Column(DateTime(timezone=True), default=_now())
     updated_at = Column(
-        DateTime(timezone=True), default=func.now(), onupdate=func.now()
+        DateTime(timezone=True), default=_now(), onupdate=_now()
     )
     is_active = Column(Boolean, default=True)
 
@@ -205,7 +213,7 @@ class VolunteerTask(Base):
 
     __tablename__ = "volunteer_tasks"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(String(36), primary_key=True, default=_uid)
     volunteer_id = Column(
         UUID(as_uuid=True), ForeignKey("volunteers.id"), nullable=False
     )
@@ -219,18 +227,18 @@ class VolunteerTask(Base):
     priority = Column(Integer, default=3)  # 1-5 scale
 
     # Location and logistics
-    location = Column(Geometry("POINT", srid=4326))
+    location = Column(String)
     estimated_duration = Column(Integer)  # minutes
     actual_duration = Column(Integer)  # minutes
 
     # Status tracking
-    status = Column(ENUM(TaskStatus), default=TaskStatus.ASSIGNED)
-    assigned_at = Column(DateTime(timezone=True), default=func.now())
+    status = Column(String(50), default=TaskStatus.ASSIGNED)
+    assigned_at = Column(DateTime(timezone=True), default=_now())
     started_at = Column(DateTime(timezone=True))
     completed_at = Column(DateTime(timezone=True))
 
     # Assignment metadata
-    created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"))
+    created_by = Column(String(36), ForeignKey("users.id"))
     assigned_by_ai = Column(Boolean, default=False)
 
     # Task outcome
@@ -279,7 +287,7 @@ class VolunteerTask(Base):
     def start_task(self):
         """Mark task as started"""
         self.status = TaskStatus.IN_PROGRESS
-        self.started_at = func.now()
+        self.started_at = _now()
 
         # Update volunteer status
         if self.volunteer:
@@ -288,7 +296,7 @@ class VolunteerTask(Base):
     def complete_task(self, completion_notes: str = None, quality_rating: int = None):
         """Mark task as completed"""
         self.status = TaskStatus.COMPLETED
-        self.completed_at = func.now()
+        self.completed_at = _now()
 
         if completion_notes:
             self.completion_notes = completion_notes
@@ -298,7 +306,7 @@ class VolunteerTask(Base):
 
         # Calculate actual duration
         if self.started_at:
-            duration = (func.now() - self.started_at).total_seconds() / 60
+            duration = (_now() - self.started_at).total_seconds() / 60
             self.actual_duration = int(duration)
 
         # Update volunteer status and metrics
@@ -334,7 +342,7 @@ class VolunteerTask(Base):
 
         # Time factor (older tasks become more urgent)
         time_since_assignment = (
-            func.now() - self.assigned_at
+            _now() - self.assigned_at
         ).total_seconds() / 3600  # hours
         time_weight = min(time_since_assignment / 2, 1.0)  # Cap at 2 hours
 

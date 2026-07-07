@@ -1,6 +1,7 @@
 """
 StadiumVerse Intelligence OS — Backend
-FastAPI + SQLite | Production-ready
+FastAPI + SQLite | Production-ready for FIFA World Cup 2026
+Challenge: Smart Stadiums & Tournament Operations
 """
 
 import logging
@@ -19,10 +20,12 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    logger.info("🧠 StadiumVerse Intelligence OS — starting up")
+    logger.info("🧠 StadiumVerse Intelligence OS — Starting up for FIFA World Cup 2026")
+    logger.info("🏟️ Challenge: Smart Stadiums & Tournament Operations")
     # Only init/seed when NOT in test mode
     if os.getenv("TESTING") != "true":
         try:
+
             from .database import init_db
             from .seed import run_seed
 

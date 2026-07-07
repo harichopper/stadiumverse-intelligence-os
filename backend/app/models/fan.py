@@ -1,17 +1,15 @@
 """
 StadiumVerse AI - Digital Fan Models
-Core models for AI Digital Twins of stadium visitors
+Core models for AI Digital Twins of stadium visitors at FIFA World Cup 2026.
 """
 
 import enum
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List
 
-# pyrefly: ignore [missing-import]
-from geoalchemy2 import Geometry
 from sqlalchemy import (
-    ARRAY,
+    JSON,
     Boolean,
     Column,
     DateTime,
@@ -21,11 +19,20 @@ from sqlalchemy import (
     String,
     Text,
 )
-from sqlalchemy.dialects.postgresql import ENUM, JSONB, UUID
 from sqlalchemy.orm import relationship
-from sqlalchemy.sql import func
 
 from ..database import Base
+
+
+def _now() -> datetime:
+    """Return timezone-aware current UTC time."""
+    return datetime.now(timezone.utc)
+
+
+def _uid() -> str:
+    """Return a new UUID string for primary keys."""
+    return str(uuid.uuid4())
+
 
 
 # Enums for fan characteristics
@@ -90,44 +97,44 @@ class DigitalTwin(Base):
     __tablename__ = "digital_twins"
 
     # Core Identity
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    fan_id = Column(UUID(as_uuid=True), ForeignKey("digital_fans.id"), nullable=False)
+    id = Column(String(36), primary_key=True, default=_uid)
+    fan_id = Column(String(36), ForeignKey("digital_fans.id"), nullable=False)
 
     # Persistent Memory Storage
-    memory_data = Column(JSONB, default=dict)  # Complete memory storage
-    personality_traits = Column(ARRAY(ENUM(PersonalityTrait)), default=[])
-    learning_history = Column(JSONB, default=dict)  # AI learning patterns
+    memory_data = Column(JSON, default=dict)  # Complete memory storage
+    personality_traits = Column(JSON, default=[])
+    learning_history = Column(JSON, default=dict)  # AI learning patterns
 
     # Visit History
     total_visits = Column(Integer, default=1)
-    first_visit = Column(DateTime(timezone=True), default=func.now())
-    last_visit = Column(DateTime(timezone=True), default=func.now())
+    first_visit = Column(DateTime(timezone=True), default=_now)
+    last_visit = Column(DateTime(timezone=True), default=_now)
 
     # Behavioral Memory
-    favorite_foods = Column(ARRAY(String), default=[])
-    preferred_seats = Column(ARRAY(String), default=[])
-    usual_companions = Column(ARRAY(String), default=[])
-    spending_pattern = Column(JSONB, default=dict)
+    favorite_foods = Column(JSON, default=[])
+    preferred_seats = Column(JSON, default=[])
+    usual_companions = Column(JSON, default=[])
+    spending_pattern = Column(JSON, default=dict)
 
     # Navigation Memory
-    preferred_routes = Column(JSONB, default=dict)
-    avoided_areas = Column(ARRAY(String), default=[])
-    navigation_speed_history = Column(ARRAY(Float), default=[])
+    preferred_routes = Column(JSON, default=dict)
+    avoided_areas = Column(JSON, default=[])
+    navigation_speed_history = Column(JSON, default=[])
 
     # Interaction Memory
-    volunteer_interactions = Column(JSONB, default=dict)
-    medical_history = Column(JSONB, default=dict)
-    complaints_feedback = Column(JSONB, default=dict)
+    volunteer_interactions = Column(JSON, default=dict)
+    medical_history = Column(JSON, default=dict)
+    complaints_feedback = Column(JSON, default=dict)
 
     # Prediction Memory
     prediction_accuracy_score = Column(Float, default=0.5)
-    behavior_patterns = Column(JSONB, default=dict)
-    emotion_patterns = Column(JSONB, default=dict)
+    behavior_patterns = Column(JSON, default=dict)
+    emotion_patterns = Column(JSON, default=dict)
 
     # Timestamps
-    created_at = Column(DateTime(timezone=True), default=func.now())
+    created_at = Column(DateTime(timezone=True), default=_now)
     updated_at = Column(
-        DateTime(timezone=True), default=func.now(), onupdate=func.now()
+        DateTime(timezone=True), default=_now, onupdate=_now
     )
 
     # Relationships
@@ -280,8 +287,8 @@ class TwinMemory(Base):
 
     __tablename__ = "twin_memories"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    twin_id = Column(UUID(as_uuid=True), ForeignKey("digital_twins.id"), nullable=False)
+    id = Column(String(36), primary_key=True, default=_uid)
+    twin_id = Column(String(36), ForeignKey("digital_twins.id"), nullable=False)
 
     # Memory Classification
     category = Column(
@@ -293,17 +300,17 @@ class TwinMemory(Base):
     # Memory Content
     title = Column(String(200), nullable=False)
     description = Column(Text)
-    data = Column(JSONB, default=dict)
+    data = Column(JSON, default=dict)
 
     # Context
-    location = Column(Geometry("POINT", srid=4326))
+    location = Column(String)
     related_entities = Column(
         ARRAY(String), default=[]
     )  # volunteer IDs, facility IDs, etc.
     emotional_context = Column(String(50))
 
     # Memory Lifecycle
-    created_at = Column(DateTime(timezone=True), default=func.now())
+    created_at = Column(DateTime(timezone=True), default=_now)
     last_recalled = Column(DateTime(timezone=True))
     recall_count = Column(Integer, default=0)
     memory_strength = Column(Float, default=1.0)  # Decays over time
@@ -316,7 +323,7 @@ class TwinMemory(Base):
 
     def recall(self):
         """Record that this memory has been recalled"""
-        self.last_recalled = func.now()
+        self.last_recalled = _now
         self.recall_count += 1
         # Strengthen memory through recall
         self.memory_strength = min(1.0, self.memory_strength + 0.1)
@@ -357,7 +364,7 @@ class DigitalFan(Base):
     __tablename__ = "digital_fans"
 
     # Primary identification
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(String(36), primary_key=True, default=_uid)
     fan_id = Column(
         String(20), unique=True, nullable=False, index=True
     )  # F001, F002, etc.
@@ -373,13 +380,13 @@ class DigitalFan(Base):
     favorite_team = Column(String(100))
 
     # V2 Enhancement: Personality Profile
-    personality_traits = Column(ARRAY(ENUM(PersonalityTrait)), default=[])
+    personality_traits = Column(JSON, default=[])
     persona_backstory = Column(Text)  # Generated unique backstory
     travel_group_size = Column(Integer, default=1)
-    travel_companions = Column(ARRAY(String), default=[])
+    travel_companions = Column(JSON, default=[])
 
     # Current emotional and physical state
-    current_emotion = Column(ENUM(FanEmotion), default=FanEmotion.NEUTRAL)
+    current_emotion = Column(String(50), default=FanEmotion.NEUTRAL)
     stress_level = Column(Integer, default=50)  # 0-100
     excitement_level = Column(Integer, default=50)  # 0-100
     walking_speed = Column(Float, default=1.2)  # m/s
@@ -388,21 +395,21 @@ class DigitalFan(Base):
     battery_level = Column(Integer, default=80)  # 0-100 for mobile device
 
     # V2 Enhancement: Emotion History
-    emotion_history = Column(JSONB, default=dict)  # Track emotion changes over time
+    emotion_history = Column(JSON, default=dict)  # Track emotion changes over time
     stress_triggers = Column(
         ARRAY(String), default=[]
     )  # What causes stress for this fan
-    happiness_factors = Column(ARRAY(String), default=[])  # What makes this fan happy
+    happiness_factors = Column(JSON, default=[])  # What makes this fan happy
 
     # Location and movement
-    current_location = Column(Geometry("POINT", srid=4326), nullable=False)
-    destination = Column(Geometry("POINT", srid=4326))
-    transportation = Column(ENUM(TransportMode), default=TransportMode.WALKING)
+    current_location = Column(String, nullable=False)
+    destination = Column(String)
+    transportation = Column(String(50), default=TransportMode.WALKING)
 
     # V2 Enhancement: Location Memory
-    visited_zones = Column(ARRAY(String), default=[])
-    favorite_locations = Column(JSONB, default=dict)
-    avoided_locations = Column(ARRAY(String), default=[])
+    visited_zones = Column(JSON, default=[])
+    favorite_locations = Column(JSON, default=dict)
+    avoided_locations = Column(JSON, default=[])
     arrival_time = Column(DateTime(timezone=True))
     predicted_departure = Column(DateTime(timezone=True))
 
@@ -414,11 +421,11 @@ class DigitalFan(Base):
     risk_score = Column(Integer, default=20)  # 0-100 overall safety risk
 
     # V2 Enhancement: Purchase and Interaction History
-    purchase_history = Column(JSONB, default=dict)
-    food_preferences = Column(ARRAY(String), default=[])
-    dietary_restrictions = Column(ARRAY(String), default=[])
+    purchase_history = Column(JSON, default=dict)
+    food_preferences = Column(JSON, default=[])
+    dietary_restrictions = Column(JSON, default=[])
     spending_budget = Column(Float, default=50.0)
-    volunteer_interactions = Column(JSONB, default=dict)
+    volunteer_interactions = Column(JSON, default=dict)
 
     # AI predictions and reasoning
     predicted_next_action = Column(Text)
@@ -427,19 +434,19 @@ class DigitalFan(Base):
     prediction_reasoning = Column(Text)  # V2: Why AI made this prediction
 
     # V2 Enhancement: Future Branches
-    future_branches = Column(JSONB, default=dict)  # Best/Likely/Worst predictions
+    future_branches = Column(JSON, default=dict)  # Best/Likely/Worst predictions
     last_prediction_accuracy = Column(Float, default=0.5)
 
     # Metadata and tracking
-    created_at = Column(DateTime(timezone=True), default=func.now())
+    created_at = Column(DateTime(timezone=True), default=_now)
     updated_at = Column(
-        DateTime(timezone=True), default=func.now(), onupdate=func.now()
+        DateTime(timezone=True), default=_now, onupdate=_now
     )
     is_active = Column(Boolean, default=True)
 
     # V2 Enhancement: Living Brain tracking
-    last_ai_update = Column(DateTime(timezone=True), default=func.now())
-    ai_agent_notes = Column(JSONB, default=dict)  # Notes from different AI agents
+    last_ai_update = Column(DateTime(timezone=True), default=_now)
+    ai_agent_notes = Column(JSON, default=dict)  # Notes from different AI agents
     collective_intelligence_score = Column(Float, default=0.5)
 
     # Relationships
@@ -709,13 +716,13 @@ class FanMovement(Base):
 
     __tablename__ = "fan_movements"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    fan_id = Column(UUID(as_uuid=True), ForeignKey("digital_fans.id"), nullable=False)
-    location = Column(Geometry("POINT", srid=4326), nullable=False)
-    timestamp = Column(DateTime(timezone=True), default=func.now())
+    id = Column(String(36), primary_key=True, default=_uid)
+    fan_id = Column(String(36), ForeignKey("digital_fans.id"), nullable=False)
+    location = Column(String, nullable=False)
+    timestamp = Column(DateTime(timezone=True), default=_now)
     speed = Column(Float)  # m/s
     direction = Column(Float)  # degrees from north
-    zone_id = Column(UUID(as_uuid=True), ForeignKey("stadium_zones.id"))
+    zone_id = Column(String(36), ForeignKey("stadium_zones.id"))
 
     # Relationships
     fan = relationship("DigitalFan", back_populates="movements")
@@ -746,15 +753,15 @@ class FanPrediction(Base):
 
     __tablename__ = "fan_predictions"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    fan_id = Column(UUID(as_uuid=True), ForeignKey("digital_fans.id"), nullable=False)
-    prediction_type = Column(ENUM(PredictionType), nullable=False)
-    predicted_location = Column(Geometry("POINT", srid=4326))
+    id = Column(String(36), primary_key=True, default=_uid)
+    fan_id = Column(String(36), ForeignKey("digital_fans.id"), nullable=False)
+    prediction_type = Column(String(50), nullable=False)
+    predicted_location = Column(String)
     predicted_time = Column(DateTime(timezone=True), nullable=False)
     confidence_score = Column(Float, nullable=False)  # 0.0-1.0
-    prediction_data = Column(JSONB)  # Flexible storage for prediction details
-    actual_outcome = Column(JSONB)  # For learning and validation
-    created_at = Column(DateTime(timezone=True), default=func.now())
+    prediction_data = Column(JSON)  # Flexible storage for prediction details
+    actual_outcome = Column(JSON)  # For learning and validation
+    created_at = Column(DateTime(timezone=True), default=_now)
     expires_at = Column(DateTime(timezone=True))
     is_accurate = Column(Boolean)  # Set after validation
 

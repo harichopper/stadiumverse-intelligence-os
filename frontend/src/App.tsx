@@ -34,7 +34,7 @@ const Background: React.FC = () => {
       c:COLS[Math.floor(Math.random()*4)]
     }));
     const tick = () => {
-      const W=c.width, H=c.height; ctx.clearRect(0,0,W,H); t+=.003;
+      const W=c.width, H=c.height; ctx.clearRect(0,0,W,H);
       // orbs
       [[W*.2,H*.3,250,'rgba(59,130,246,.07)'],[W*.8,H*.6,290,'rgba(139,92,246,.05)']].forEach(([bx,by,br,bc])=>{
         const g=ctx.createRadialGradient(bx as number,by as number,0,bx as number,by as number,br as number);

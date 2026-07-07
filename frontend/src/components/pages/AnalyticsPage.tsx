@@ -40,13 +40,13 @@ export const AnalyticsPage: React.FC = () => {
       })
       .catch(() => setLoading(false));
     const iv = setInterval(() => {
-      api.crowdHistory(90).then(r => setSnapshots(r.snapshots)).catch(() => {});
+      api.crowdHistory(90).then(r => setSnapshots(r.snapshots)).catch(() => { });
     }, 10000);
     return () => clearInterval(iv);
   }, []);
 
   // crowd over time
-  const crowdOption = {
+  const crowdOption: EChartsOption = {
     backgroundColor: 'transparent',
     grid: { left: 48, right: 16, top: 16, bottom: 36 },
     tooltip: { trigger: 'axis', backgroundColor: 'rgba(5,8,22,.9)', borderColor: '#3B82F6', textStyle: { color: '#F8FAFC', fontSize: 11 } },
@@ -71,7 +71,7 @@ export const AnalyticsPage: React.FC = () => {
 
   // gate densities
   const latestSnap = snapshots[snapshots.length - 1];
-  const gateOption = {
+  const gateOption: EChartsOption = {
     backgroundColor: 'transparent',
     grid: { left: 48, right: 16, top: 16, bottom: 36 },
     tooltip: { trigger: 'axis', backgroundColor: 'rgba(5,8,22,.9)', borderColor: '#3B82F6', textStyle: { color: '#F8FAFC', fontSize: 11 } },
@@ -87,16 +87,16 @@ export const AnalyticsPage: React.FC = () => {
     series: [{
       type: 'bar', barMaxWidth: 18,
       data: latestSnap ? [
-        { value: latestSnap.gate_densities.D, itemStyle: { color: '#3B82F6', borderRadius: [0,4,4,0] } },
-        { value: latestSnap.gate_densities.C, itemStyle: { color: '#10B981', borderRadius: [0,4,4,0] } },
-        { value: latestSnap.gate_densities.A, itemStyle: { color: '#F59E0B', borderRadius: [0,4,4,0] } },
-        { value: latestSnap.gate_densities.B, itemStyle: { color: latestSnap.gate_densities.B > 85 ? '#EF4444' : '#F59E0B', borderRadius: [0,4,4,0] } },
+        { value: latestSnap.gate_densities.D, itemStyle: { color: '#3B82F6', borderRadius: [0, 4, 4, 0] } },
+        { value: latestSnap.gate_densities.C, itemStyle: { color: '#10B981', borderRadius: [0, 4, 4, 0] } },
+        { value: latestSnap.gate_densities.A, itemStyle: { color: '#F59E0B', borderRadius: [0, 4, 4, 0] } },
+        { value: latestSnap.gate_densities.B, itemStyle: { color: latestSnap.gate_densities.B > 85 ? '#EF4444' : '#F59E0B', borderRadius: [0, 4, 4, 0] } },
       ] : [],
     }],
   };
 
   // stress over time
-  const stressOption = {
+  const stressOption: EChartsOption = {
     backgroundColor: 'transparent',
     grid: { left: 40, right: 16, top: 16, bottom: 36 },
     tooltip: { trigger: 'axis', backgroundColor: 'rgba(5,8,22,.9)', borderColor: '#8B5CF6', textStyle: { color: '#F8FAFC', fontSize: 11 } },
@@ -122,14 +122,14 @@ export const AnalyticsPage: React.FC = () => {
   };
 
   // AI decisions confidence
-  const decisionOption = {
+  const decisionOption: EChartsOption = {
     backgroundColor: 'transparent',
     grid: { left: 48, right: 16, top: 16, bottom: 36 },
     tooltip: {
       trigger: 'axis', backgroundColor: 'rgba(5,8,22,.9)', borderColor: '#10B981',
       textStyle: { color: '#F8FAFC', fontSize: 11 },
-      formatter: (params: { dataIndex: number }[]) => {
-        const p = params[0];
+      formatter: (params) => {
+        const p = (Array.isArray(params) ? params[0] : params) as Record<string, unknown>;
         if (!p || typeof p.dataIndex !== 'number') return '';
         const d = decisions[p.dataIndex];
         return d ? `${d.agent}: ${d.decision.slice(0, 40)}...` : '';
@@ -228,9 +228,11 @@ export const AnalyticsPage: React.FC = () => {
                 <span style={{ fontSize: 10, color: '#94A3B8', width: 80, flexShrink: 0 }}>{d.agent}</span>
                 <span style={{ flex: 1, fontSize: 11, color: '#CBD5E1' }}>{d.decision}</span>
                 <span style={{ fontSize: 10, color: '#64748B', width: 36, textAlign: 'right' }}>{Math.round(d.confidence * 100)}%</span>
-                <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 7px', borderRadius: 999, flexShrink: 0,
+                <span style={{
+                  fontSize: 9, fontWeight: 700, padding: '2px 7px', borderRadius: 999, flexShrink: 0,
                   background: d.outcome === 'SUCCESS' ? 'rgba(16,185,129,.15)' : d.outcome === 'PARTIAL' ? 'rgba(245,158,11,.15)' : 'rgba(100,116,139,.15)',
-                  color: d.outcome === 'SUCCESS' ? '#10B981' : d.outcome === 'PARTIAL' ? '#F59E0B' : '#94A3B8' }}>
+                  color: d.outcome === 'SUCCESS' ? '#10B981' : d.outcome === 'PARTIAL' ? '#F59E0B' : '#94A3B8'
+                }}>
                   {d.outcome}
                 </span>
               </motion.div>

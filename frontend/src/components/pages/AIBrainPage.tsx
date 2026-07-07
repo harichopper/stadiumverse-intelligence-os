@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Brain, Zap, Clock, Cpu, Activity, Database, TrendingUp, ChevronRight } from 'lucide-react';
+import { api, AIDecisionData } from '../../services/api';
 
 const ReasoningChain: React.FC = () => {
   const steps = [
@@ -122,14 +123,19 @@ export const AIBrainPage: React.FC = () => {
   const [tokenUsage, setTokenUsage] = useState(24819);
   const [responseTime, setResponseTime] = useState(0.43);
   const [memUsed, setMemUsed] = useState(78);
+  const [decisions, setDecisions] = useState<AIDecisionData[]>([]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    api.decisions(10).then(r => setDecisions(r.decisions)).catch(() => {});
+    const iv1 = setInterval(() => {
       setTokenUsage(t => t + Math.floor(Math.random() * 150));
       setResponseTime(parseFloat((0.3 + Math.random() * 0.4).toFixed(2)));
       setMemUsed(m => Math.min(100, Math.max(60, m + Math.floor((Math.random() - 0.5) * 2))));
     }, 2000);
-    return () => clearInterval(interval);
+    const iv2 = setInterval(() => {
+      api.decisions(10).then(r => setDecisions(r.decisions)).catch(() => {});
+    }, 10000);
+    return () => { clearInterval(iv1); clearInterval(iv2); };
   }, []);
 
   const stats = [

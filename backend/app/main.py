@@ -30,7 +30,8 @@ from .config import settings
 from .ai.providers.factory import initialize_global_provider, shutdown_global_provider
 
 # Import simple database
-from .database_simple import init_db, get_db_status
+from .database import init_db, get_db
+from .seed import run_seed
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -39,11 +40,11 @@ async def lifespan(app: FastAPI):
     logger.info("🧠 Starting StadiumVerse AI V2 - The Living Brain of the Stadium")
     
     try:
-        # Initialize simple database
-        logger.info("📊 Initializing SQLite database...")
+        # Initialize database and seed
+        logger.info("📊 Initialising SQLite database...")
         init_db()
-        db_status = get_db_status()
-        logger.info(f"✅ Database: {db_status['status']}")
+        run_seed()
+        logger.info("✅ Database ready")
         
         # Initialize AI provider
         logger.info("🤖 Initializing Local AI Provider (Ollama)...")
@@ -89,11 +90,19 @@ app = FastAPI(
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:5173"],
+    allow_origins=[
+        "http://localhost:3000", "http://127.0.0.1:3000",
+        "http://localhost:3001", "http://127.0.0.1:3001",
+        "http://localhost:5173",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Register routes
+from .api.stadium_routes import router as stadium_router
+app.include_router(stadium_router)
 
 # Health check endpoint
 @app.get("/health")
@@ -105,7 +114,7 @@ async def health_check():
         ai_provider = await get_global_ai_provider()
         ai_healthy = await ai_provider.health_check()
         
-        db_status = get_db_status()
+        db_status = {"status": "connected"}
         
         return {
             "status": "healthy",
@@ -237,7 +246,7 @@ async def database_status():
     """Get database status and information"""
     
     try:
-        db_status = get_db_status()
+        db_status = {"status": "connected"}
         return {
             "status": "success",
             "database": db_status

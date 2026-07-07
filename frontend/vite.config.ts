@@ -5,15 +5,15 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 3000,
+    strictPort: false,   // use next port if 3000 is busy
     proxy: {
       '/api': {
         target: 'http://localhost:8000',
         changeOrigin: true,
         secure: false,
       },
-      '/ws': {
-        target: 'ws://localhost:8000',
-        ws: true,
+      '/health': {
+        target: 'http://localhost:8000',
         changeOrigin: true,
       },
     },
@@ -25,19 +25,16 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          react: ['react', 'react-dom'],
-          motion: ['framer-motion'],
+          react:   ['react', 'react-dom'],
+          motion:  ['framer-motion'],
           echarts: ['echarts', 'echarts-for-react'],
-          router: ['react-router-dom'],
-          icons: ['lucide-react'],
-          radix: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-tooltip'],
+          router:  ['react-router-dom'],
+          icons:   ['lucide-react'],
         },
       },
     },
   },
-  define: {
-    global: 'globalThis',
-  },
+  define: { global: 'globalThis' },
   optimizeDeps: {
     include: ['echarts', 'framer-motion', 'lucide-react', 'zustand'],
   },

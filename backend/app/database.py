@@ -1,33 +1,34 @@
 """
-StadiumVerse AI V2 - Database Configuration
-SQLite database setup for development
+StadiumVerse Intelligence OS — Database
+SQLite with SQLAlchemy (no external deps needed)
 """
 
+import os
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from .config import settings
+from sqlalchemy.orm import sessionmaker, declarative_base
 
-# Create SQLite engine
+DB_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "stadiumverse.db")
+DATABASE_URL = f"sqlite:///{DB_PATH}"
+
 engine = create_engine(
-    "sqlite:///./stadiumverse.db",
-    connect_args={"check_same_thread": False}  # SQLite specific
+    DATABASE_URL,
+    connect_args={"check_same_thread": False},
+    echo=False,
 )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
 Base = declarative_base()
 
-# Database dependency
+
 def get_db():
-    """Get database session"""
     db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
 
-# Initialize database
+
 def init_db():
-    """Initialize database tables"""
+    from . import db_models  # noqa — registers all models
     Base.metadata.create_all(bind=engine)
+    print(f"✅ SQLite DB initialised: {DB_PATH}")

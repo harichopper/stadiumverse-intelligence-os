@@ -1,93 +1,88 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users } from 'lucide-react';
-
-const FANS = [
-  { id: 'f001', name: 'Carlos M.', flag: '🇧🇷', country: 'Brazil', emotion: 'Ecstatic', emoticon: '😄', stress: 12, thought: 'Goal! One more goal!', memory: 'Saw this team win in 2018', prediction: 'Will stay to celebrate', confidence: 94, sector: 'N7', seat: '14C' },
-  { id: 'f002', name: 'Diego R.', flag: '🇦🇷', country: 'Argentina', emotion: 'Anxious', emoticon: '😰', stress: 78, thought: 'Come on, we need to equalize!', memory: 'Lost a final in similar score', prediction: 'May leave early', confidence: 67, sector: 'S3', seat: '28A' },
-  { id: 'f003', name: 'Hans K.', flag: '🇩🇪', country: 'Germany', emotion: 'Calm', emoticon: '😌', stress: 22, thought: 'Great technical football', memory: 'First World Cup final', prediction: 'Will watch till end', confidence: 91, sector: 'E12', seat: '5B' },
-  { id: 'f004', name: 'Marie D.', flag: '🇫🇷', country: 'France', emotion: 'Excited', emoticon: '🤩', stress: 31, thought: 'Amazing atmosphere!', memory: '2022 WC final atmosphere was similar', prediction: 'Will buy merchandise', confidence: 88, sector: 'W6', seat: '19D' },
-  { id: 'f005', name: 'Yuki T.', flag: '🇯🇵', country: 'Japan', emotion: 'Delighted', emoticon: '😊', stress: 8, thought: 'This is history in the making', memory: 'First time attending WC', prediction: 'Will share live on social media', confidence: 97, sector: 'N9', seat: '3A' },
-  { id: 'f006', name: 'Ahmed K.', flag: '🇸🇦', country: 'Saudi Arabia', emotion: 'Tense', emoticon: '😤', stress: 55, thought: 'Just a few more minutes...', memory: 'Attended 2002 WC in Korea', prediction: 'Neutral — will enjoy the game', confidence: 79, sector: 'E4', seat: '22C' },
-];
+import { api, Fan } from '../../services/api';
 
 const stressColor = (s: number) => s < 30 ? '#10B981' : s < 60 ? '#F59E0B' : '#EF4444';
 const stressLabel = (s: number) => s < 30 ? 'LOW' : s < 60 ? 'MODERATE' : 'HIGH';
 
-export const DigitalTwinsPage: React.FC = () => {
-  const [selected, setSelected] = useState<typeof FANS[0] | null>(null);
-  const [search, setSearch] = useState('');
+const emotionEmoji: Record<string, string> = {
+  ecstatic:'😄', excited:'🤩', joyful:'😊', calm:'😌', anxious:'😰',
+  tense:'😤', fearful:'😨', angry:'😡', tired:'😴', neutral:'😐',
+  delighted:'🥳', energetic:'💪', nostalgic:'🥹', curious:'🤔',
+};
 
-  const filtered = FANS.filter(f =>
+export const DigitalTwinsPage: React.FC = () => {
+  const [fans, setFans] = useState<Fan[]>([]);
+  const [selected, setSelected] = useState<Fan | null>(null);
+  const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api.fans(50).then(r => { setFans(r.fans); setLoading(false); }).catch(() => setLoading(false));
+    const iv = setInterval(() => {
+      api.fans(50).then(r => setFans(r.fans)).catch(() => {});
+    }, 8000);
+    return () => clearInterval(iv);
+  }, []);
+
+  const filtered = fans.filter(f =>
     f.name.toLowerCase().includes(search.toLowerCase()) ||
     f.country.toLowerCase().includes(search.toLowerCase()) ||
-    f.sector.toLowerCase().includes(search.toLowerCase())
+    f.sector?.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
-    <div className="h-full flex overflow-hidden p-4 gap-4">
+    <div style={{ height: '100%', display: 'flex', overflow: 'hidden', padding: 12, gap: 12 }}>
+
       {/* Fan list */}
-      <div className="flex flex-col" style={{ width: 360, flexShrink: 0 }}>
-        <motion.div className="flex items-center gap-3 mb-4" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-          <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'rgba(6,182,212,0.15)', border: '1px solid rgba(6,182,212,0.3)' }}>
-            <Users size={16} style={{ color: '#06B6D4' }} />
-          </div>
+      <div style={{ width: 340, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+          style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ width: 32, height: 32, borderRadius: 10, background: 'rgba(6,182,212,.15)', border: '1px solid rgba(6,182,212,.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16 }}>👥</div>
           <div>
-            <h2 className="text-lg font-light" style={{ color: '#F8FAFC' }}>Digital Twins</h2>
-            <p className="text-[10px]" style={{ color: '#64748B' }}>87,342 active twins · Showing sample</p>
+            <div style={{ fontSize: 16, fontWeight: 300, color: '#F8FAFC' }}>Digital Twins</div>
+            <div style={{ fontSize: 10, color: '#64748B' }}>{fans.length} twins active · DB connected</div>
           </div>
+          <motion.div animate={{ opacity: [1, .4, 1] }} transition={{ duration: 2, repeat: Infinity }}
+            style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 4, fontSize: 9, color: '#10B981' }}>
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#10B981', display: 'inline-block' }} />
+            LIVE
+          </motion.div>
         </motion.div>
 
         {/* Search */}
-        <div className="mb-3 px-3 py-2 rounded-xl flex items-center gap-2" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '7px 12px', background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.08)', borderRadius: 10 }}>
           <span style={{ color: '#64748B' }}>🔍</span>
-          <input
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="Search fans..."
-            className="flex-1 bg-transparent text-xs outline-none"
-            style={{ color: '#F8FAFC' }}
-          />
+          <input value={search} onChange={e => setSearch(e.target.value)}
+            placeholder="Search fans, country, sector..."
+            style={{ flex: 1, background: 'none', border: 'none', outline: 'none', color: '#F8FAFC', fontSize: 12 }} />
         </div>
 
-        {/* Fan cards */}
-        <div className="flex-1 overflow-y-auto space-y-2 pr-1">
+        {/* List */}
+        <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 6 }}>
+          {loading && <div style={{ textAlign: 'center', color: '#64748B', padding: 32, fontSize: 12 }}>Loading from database...</div>}
           {filtered.map((fan, i) => (
-            <motion.div
-              key={fan.id}
-              className="rounded-2xl p-3 cursor-pointer"
-              style={{
-                background: selected?.id === fan.id ? 'rgba(6,182,212,0.08)' : 'rgba(255,255,255,0.03)',
-                border: `1px solid ${selected?.id === fan.id ? 'rgba(6,182,212,0.3)' : 'rgba(255,255,255,0.06)'}`,
-              }}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.06 }}
-              whileHover={{ borderColor: 'rgba(6,182,212,0.2)' }}
+            <motion.div key={fan.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * .05 }}
               onClick={() => setSelected(fan)}
-            >
-              <div className="flex items-center gap-3">
-                <div className="text-2xl">{fan.flag}</div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium" style={{ color: '#F8FAFC' }}>{fan.name}</span>
-                    <span className="text-lg">{fan.emoticon}</span>
+              whileHover={{ borderColor: 'rgba(6,182,212,.3)' }}
+              style={{ padding: 10, borderRadius: 12, cursor: 'pointer',
+                background: selected?.id === fan.id ? 'rgba(6,182,212,.08)' : 'rgba(255,255,255,.03)',
+                border: `1px solid ${selected?.id === fan.id ? 'rgba(6,182,212,.35)' : 'rgba(255,255,255,.06)'}` }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span style={{ fontSize: 22 }}>{fan.flag}</span>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: 13, fontWeight: 500, color: '#F8FAFC' }}>{fan.name}</span>
+                    <span style={{ fontSize: 16 }}>{emotionEmoji[fan.current_emotion] ?? '😐'}</span>
                   </div>
-                  <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-[10px]" style={{ color: '#64748B' }}>{fan.country}</span>
-                    <span className="text-[10px]" style={{ color: '#475569' }}>·</span>
-                    <span className="text-[10px]" style={{ color: '#475569' }}>Sector {fan.sector}</span>
+                  <div style={{ fontSize: 9, color: '#64748B', marginTop: 1 }}>
+                    {fan.country} · Sector {fan.sector}
                   </div>
-                  <div className="flex items-center gap-2 mt-1.5">
-                    <div className="flex-1 h-1 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
-                      <div
-                        className="h-full rounded-full transition-all"
-                        style={{ width: `${fan.stress}%`, background: stressColor(fan.stress) }}
-                      />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 5 }}>
+                    <div style={{ flex: 1, height: 3, borderRadius: 2, background: 'rgba(255,255,255,.06)' }}>
+                      <div style={{ height: '100%', borderRadius: 2, width: `${fan.stress_level}%`, background: stressColor(fan.stress_level), transition: 'width .6s' }} />
                     </div>
-                    <span className="text-[9px] font-semibold" style={{ color: stressColor(fan.stress) }}>
-                      {stressLabel(fan.stress)}
-                    </span>
+                    <span style={{ fontSize: 9, fontWeight: 600, color: stressColor(fan.stress_level) }}>{stressLabel(fan.stress_level)}</span>
                   </div>
                 </div>
               </div>
@@ -96,130 +91,104 @@ export const DigitalTwinsPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Fan Inspector */}
+      {/* Inspector */}
       <AnimatePresence>
         {selected ? (
-          <motion.div
-            className="flex-1 overflow-y-auto"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            key={selected.id}
-          >
-            {/* Apple Health-style profile */}
-            <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(6,182,212,0.15)' }}>
-              {/* Header */}
-              <div
-                className="p-6"
-                style={{ background: 'linear-gradient(135deg, rgba(6,182,212,0.12) 0%, rgba(139,92,246,0.08) 100%)' }}
-              >
-                <div className="flex items-center gap-5">
-                  <div
-                    className="w-20 h-20 rounded-3xl flex items-center justify-center text-4xl"
-                    style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}
-                  >
-                    {selected.flag}
-                  </div>
-                  <div className="flex-1">
-                    <h2 className="text-2xl font-semibold" style={{ color: '#F8FAFC' }}>{selected.name}</h2>
-                    <p className="text-sm mt-0.5" style={{ color: '#94A3B8' }}>{selected.country} · Digital Twin #{selected.id}</p>
-                    <div className="flex items-center gap-3 mt-3">
-                      <span className="text-2xl">{selected.emoticon}</span>
-                      <div>
-                        <div className="text-sm font-semibold" style={{ color: '#F8FAFC' }}>{selected.emotion}</div>
-                        <div className="text-[10px]" style={{ color: '#64748B' }}>Current Emotion</div>
-                      </div>
-                      <div className="ml-6">
-                        <div className="text-sm font-semibold" style={{ color: '#F8FAFC' }}>Sector {selected.sector}, {selected.seat}</div>
-                        <div className="text-[10px]" style={{ color: '#64748B' }}>Location</div>
-                      </div>
+          <motion.div key={selected.id} initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 16 }}
+            style={{ flex: 1, overflowY: 'auto', background: 'rgba(255,255,255,.025)', border: '1px solid rgba(6,182,212,.15)', borderRadius: 14 }}>
+
+            {/* Header */}
+            <div style={{ padding: 20, background: 'linear-gradient(135deg,rgba(6,182,212,.12),rgba(139,92,246,.08))' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <div style={{ width: 72, height: 72, borderRadius: 18, background: 'rgba(255,255,255,.08)', border: '1px solid rgba(255,255,255,.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 36 }}>{selected.flag}</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 22, fontWeight: 600, color: '#F8FAFC' }}>{selected.name}</div>
+                  <div style={{ fontSize: 12, color: '#94A3B8', marginTop: 2 }}>{selected.country} · Digital Twin #{selected.fan_id}</div>
+                  <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{ fontSize: 22 }}>{emotionEmoji[selected.current_emotion] ?? '😐'}</div>
+                      <div style={{ fontSize: 9, color: '#64748B' }}>Emotion</div>
+                      <div style={{ fontSize: 10, fontWeight: 600, color: '#10B981', textTransform: 'capitalize' }}>{selected.current_emotion}</div>
+                    </div>
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{ fontSize: 18, fontWeight: 700, color: stressColor(selected.stress_level) }}>{selected.stress_level}%</div>
+                      <div style={{ fontSize: 9, color: '#64748B' }}>Stress</div>
+                      <div style={{ fontSize: 9, fontWeight: 600, color: stressColor(selected.stress_level) }}>{stressLabel(selected.stress_level)}</div>
+                    </div>
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{ fontSize: 18, fontWeight: 700, color: '#3B82F6' }}>{Math.round(selected.prediction_confidence * 100)}%</div>
+                      <div style={{ fontSize: 9, color: '#64748B' }}>AI Confidence</div>
+                    </div>
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{ fontSize: 18, fontWeight: 700, color: '#F59E0B' }}>{selected.risk_score}</div>
+                      <div style={{ fontSize: 9, color: '#64748B' }}>Risk Score</div>
                     </div>
                   </div>
-                  <button
-                    className="text-xs px-3 py-1.5 rounded-xl"
-                    style={{ background: 'rgba(255,255,255,0.06)', color: '#94A3B8' }}
-                    onClick={() => setSelected(null)}
-                  >
-                    Close
-                  </button>
+                </div>
+                <button onClick={() => setSelected(null)} style={{ padding: '4px 10px', background: 'rgba(255,255,255,.06)', border: 'none', borderRadius: 8, color: '#94A3B8', cursor: 'pointer', fontSize: 11 }}>✕ Close</button>
+              </div>
+            </div>
+
+            {/* Body */}
+            <div style={{ padding: 16, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              {/* Stress bar */}
+              <div style={{ gridColumn: '1/-1', background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.06)', borderRadius: 12, padding: 14 }}>
+                <div style={{ fontSize: 9, color: '#64748B', textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: 8 }}>Biometric State</div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 8 }}>
+                  {[
+                    { label: 'Stress', value: selected.stress_level, color: stressColor(selected.stress_level) },
+                    { label: 'Excitement', value: selected.excitement_level, color: '#3B82F6' },
+                    { label: 'Hunger', value: selected.hunger_level, color: '#F59E0B' },
+                    { label: 'Fatigue', value: selected.fatigue_level, color: '#8B5CF6' },
+                  ].map(item => (
+                    <div key={item.label} style={{ textAlign: 'center' }}>
+                      <div style={{ fontSize: 16, fontWeight: 700, color: item.color }}>{item.value}%</div>
+                      <div style={{ fontSize: 9, color: '#64748B', margin: '3px 0' }}>{item.label}</div>
+                      <div style={{ height: 3, background: 'rgba(255,255,255,.06)', borderRadius: 2 }}>
+                        <motion.div style={{ height: '100%', borderRadius: 2, background: item.color }}
+                          initial={{ width: 0 }} animate={{ width: `${item.value}%` }} transition={{ duration: 1 }} />
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              {/* Stats */}
-              <div className="p-4 grid grid-cols-2 gap-3">
-                {/* Stress gauge */}
-                <div className="rounded-2xl p-4" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                  <div className="text-[10px] uppercase tracking-wider mb-3" style={{ color: '#64748B' }}>Stress Level</div>
-                  <div className="flex items-center gap-3">
-                    <div className="relative w-16 h-16">
-                      <svg viewBox="0 0 64 64" className="w-16 h-16 -rotate-90">
-                        <circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="6" />
-                        <motion.circle
-                          cx="32" cy="32" r="26"
-                          fill="none"
-                          stroke={stressColor(selected.stress)}
-                          strokeWidth="6"
-                          strokeLinecap="round"
-                          strokeDasharray={`${2 * Math.PI * 26}`}
-                          initial={{ strokeDashoffset: 2 * Math.PI * 26 }}
-                          animate={{ strokeDashoffset: 2 * Math.PI * 26 * (1 - selected.stress / 100) }}
-                          transition={{ duration: 1.5 }}
-                        />
-                      </svg>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-sm font-bold" style={{ color: stressColor(selected.stress) }}>{selected.stress}%</span>
-                      </div>
-                    </div>
-                    <div>
-                      <div className="text-lg font-bold" style={{ color: stressColor(selected.stress) }}>{stressLabel(selected.stress)}</div>
-                      <div className="text-[10px]" style={{ color: '#64748B' }}>Biometric reading</div>
-                    </div>
-                  </div>
+              {[
+                { label: '💭 Current Thought', text: selected.current_thought, color: '#8B5CF6' },
+                { label: '🧠 Memory', text: selected.memory_summary, color: '#3B82F6' },
+                { label: '🔮 AI Prediction', text: selected.predicted_action, color: '#F59E0B' },
+                { label: '📍 Location', text: `Sector ${selected.sector}${selected.seat ? ` · Seat ${selected.seat}` : ''} · Age ${selected.age}`, color: '#10B981' },
+              ].map(item => (
+                <div key={item.label} style={{ background: 'rgba(255,255,255,.03)', border: `1px solid rgba(255,255,255,.06)`, borderRadius: 12, padding: 12 }}>
+                  <div style={{ fontSize: 9, color: '#64748B', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 6 }}>{item.label}</div>
+                  <p style={{ fontSize: 12, color: '#CBD5E1', margin: 0, lineHeight: 1.6, borderLeft: `2px solid ${item.color}40`, paddingLeft: 8 }}>
+                    "{item.text ?? 'No data'}"
+                  </p>
                 </div>
+              ))}
 
-                {/* Confidence */}
-                <div className="rounded-2xl p-4" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                  <div className="text-[10px] uppercase tracking-wider mb-3" style={{ color: '#64748B' }}>AI Confidence</div>
-                  <div className="text-3xl font-bold mb-1" style={{ color: '#3B82F6' }}>{selected.confidence}%</div>
-                  <div className="text-[10px]" style={{ color: '#64748B' }}>Prediction accuracy</div>
-                  <div className="w-full h-1.5 rounded-full mt-2" style={{ background: 'rgba(255,255,255,0.06)' }}>
-                    <motion.div
-                      className="h-full rounded-full"
-                      style={{ background: 'linear-gradient(90deg, #3B82F6, #8B5CF6)' }}
-                      initial={{ width: 0 }}
-                      animate={{ width: `${selected.confidence}%` }}
-                      transition={{ duration: 1.5 }}
-                    />
-                  </div>
+              {/* Confidence bar */}
+              <div style={{ gridColumn: '1/-1', background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.06)', borderRadius: 12, padding: 12 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                  <span style={{ fontSize: 9, color: '#64748B', textTransform: 'uppercase', letterSpacing: '.08em' }}>Prediction Confidence</span>
+                  <span style={{ fontSize: 16, fontWeight: 700, color: '#3B82F6' }}>{Math.round(selected.prediction_confidence * 100)}%</span>
                 </div>
-
-                {/* Thought, Memory, Prediction */}
-                {[
-                  { label: '💭 Current Thought', value: selected.thought, color: '#8B5CF6' },
-                  { label: '🧠 Memory', value: selected.memory, color: '#3B82F6' },
-                  { label: '🔮 Prediction', value: selected.prediction, color: '#F59E0B' },
-                ].map(item => (
-                  <div key={item.label} className="rounded-2xl p-4 col-span-2" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                    <div className="text-[10px] uppercase tracking-wider mb-2 font-medium" style={{ color: '#64748B' }}>{item.label}</div>
-                    <p className="text-sm px-3 py-2 rounded-xl" style={{ color: '#CBD5E1', background: `${item.color}08`, borderLeft: `2px solid ${item.color}50` }}>
-                      "{item.value}"
-                    </p>
-                  </div>
-                ))}
+                <div style={{ height: 6, background: 'rgba(255,255,255,.06)', borderRadius: 3, overflow: 'hidden' }}>
+                  <motion.div style={{ height: '100%', background: 'linear-gradient(90deg,#3B82F6,#8B5CF6)', borderRadius: 3 }}
+                    initial={{ width: 0 }} animate={{ width: `${selected.prediction_confidence * 100}%` }} transition={{ duration: 1.2 }} />
+                </div>
+                <div style={{ fontSize: 9, color: '#475569', marginTop: 4 }}>
+                  Last updated: {selected.updated_at ? new Date(selected.updated_at).toLocaleTimeString() : 'Live'}
+                </div>
               </div>
             </div>
           </motion.div>
         ) : (
-          <motion.div
-            className="flex-1 flex items-center justify-center"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            <div className="text-center">
-              <div className="text-5xl mb-4">👥</div>
-              <p className="text-sm" style={{ color: '#475569' }}>Select a fan to inspect their digital twin</p>
-              <p className="text-[11px] mt-1" style={{ color: '#334155' }}>87,342 twins currently active</p>
-            </div>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 12 }}>
+            <span style={{ fontSize: 48 }}>👥</span>
+            <p style={{ color: '#475569', fontSize: 13 }}>Select a fan to inspect their digital twin</p>
+            <p style={{ color: '#334155', fontSize: 10 }}>{fans.length} digital twins loaded from SQLite</p>
           </motion.div>
         )}
       </AnimatePresence>

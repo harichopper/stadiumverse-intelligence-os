@@ -13,6 +13,7 @@ import { PlaceholderPage } from './components/pages/PlaceholderPage';
 import { PageBoundary } from './components/common/PageBoundary';
 import { useAppStore } from './store/appStore';
 import { useLiveData } from './hooks/useLiveData';
+import { useDashboardData } from './hooks/useDashboardData';
 
 /* ─────────────────────────────────────────────────────────────
    BACKGROUND CANVAS
@@ -232,6 +233,7 @@ const PageRenderer: React.FC = () => {
 ───────────────────────────────────────────────────────────── */
 const Shell: React.FC = () => {
   useLiveData();
+  useDashboardData();
   return (
     <div style={{position:'fixed',inset:0,zIndex:10,display:'flex',flexDirection:'column',overflow:'hidden'}}>
       <TopBar />

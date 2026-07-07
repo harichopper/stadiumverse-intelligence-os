@@ -2,7 +2,6 @@
 Tests: Stadium Events endpoints
 """
 
-from .conftest import make_volunteer, make_fan
 from app.db_models import StadiumEvent
 from datetime import datetime, timedelta
 
@@ -46,12 +45,21 @@ class TestListEvents:
     def test_event_fields_present(self, client, db):
         make_event(db)
         event = client.get("/api/stadium/events").json()["events"][0]
-        for field in ["id", "timestamp", "event_type", "title", "description", "severity", "zone", "resolved"]:
+        for field in [
+            "id",
+            "timestamp",
+            "event_type",
+            "title",
+            "description",
+            "severity",
+            "zone",
+            "resolved",
+        ]:
             assert field in event
 
     def test_events_ordered_newest_first(self, client, db):
-        older = make_event(db, "goal", "Older Goal", 1)
-        newer = make_event(db, "crowd", "Newer Alert", 3)
+        make_event(db, "goal", "Older Goal", 1)
+        make_event(db, "crowd", "Newer Alert", 3)
         events = client.get("/api/stadium/events").json()["events"]
         assert events[0]["title"] == "Newer Alert"
         assert events[1]["title"] == "Older Goal"

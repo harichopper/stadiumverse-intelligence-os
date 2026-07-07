@@ -370,5 +370,3 @@ class InterventionProposal:
                 "valid_until": self.valid_until.isoformat(),
             },
         }
-
-

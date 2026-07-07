@@ -21,8 +21,15 @@ class TestCurrentCrowd:
     def test_snapshot_fields_present(self, client, db):
         make_snapshot(db)
         snap = client.get("/api/stadium/crowd/current").json()
-        for field in ["total_fans", "avg_stress", "avg_excitement", "risk_level",
-                      "gate_densities", "queue_avg_min", "weather"]:
+        for field in [
+            "total_fans",
+            "avg_stress",
+            "avg_excitement",
+            "risk_level",
+            "gate_densities",
+            "queue_avg_min",
+            "weather",
+        ]:
             assert field in snap
 
     def test_gate_densities_structure(self, client, db):

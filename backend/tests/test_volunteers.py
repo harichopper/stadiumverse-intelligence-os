@@ -30,7 +30,14 @@ class TestListVolunteers:
     def test_volunteer_fields(self, client, db):
         make_volunteer(db, "V001", "Alice")
         vol = client.get("/api/stadium/volunteers").json()["volunteers"][0]
-        for field in ["id", "volunteer_id", "name", "availability", "skills", "languages"]:
+        for field in [
+            "id",
+            "volunteer_id",
+            "name",
+            "availability",
+            "skills",
+            "languages",
+        ]:
             assert field in vol
 
 
@@ -52,6 +59,7 @@ class TestDeployVolunteer:
 
     def test_deploy_creates_task(self, client, db):
         from app.db_models import VolunteerTask
+
         make_volunteer(db, "V001", "Alice", "available")
         r = client.post("/api/stadium/volunteers/V001/deploy?zone=Gate B")
         assert r.status_code == 200
@@ -68,5 +76,6 @@ class TestDeployVolunteer:
     def test_deploy_busy_volunteer(self, client, db):
         make_volunteer(db, "V001", "Alice", "busy")
         r = client.post("/api/stadium/volunteers/V001/deploy?zone=Gate C")
-        assert r.status_code == 200  # Wait, does the current code allow deploying busy volunteers? Let's check stadium_routes.py!
-
+        assert (
+            r.status_code == 200
+        )  # Wait, does the current code allow deploying busy volunteers? Let's check stadium_routes.py!

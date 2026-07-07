@@ -12,8 +12,14 @@ class TestDashboard:
 
     def test_dashboard_structure(self, client):
         data = client.get("/api/stadium/dashboard").json()
-        for key in ["crowd", "fans_online", "volunteers_available",
-                    "recent_decisions", "recent_events", "timestamp"]:
+        for key in [
+            "crowd",
+            "fans_online",
+            "volunteers_available",
+            "recent_decisions",
+            "recent_events",
+            "timestamp",
+        ]:
             assert key in data
 
     def test_fans_online_count(self, client, db):
@@ -47,6 +53,7 @@ class TestDashboard:
     def test_dashboard_fast_response(self, client, db):
         """Dashboard must respond quickly — critical for real-time use."""
         import time
+
         make_snapshot(db)
         make_fan(db, "F001", "Fan", "BRA")
         start = time.time()

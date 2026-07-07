@@ -21,8 +21,6 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 
-
-
 def get_db() -> Generator[Session, None, None]:
     """Provide a transactional scope around a series of operations."""
     db = SessionLocal()

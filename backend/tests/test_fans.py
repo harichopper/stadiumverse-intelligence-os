@@ -2,7 +2,6 @@
 Tests: Digital Fan Twin endpoints
 """
 
-import pytest
 from .conftest import make_fan
 
 
@@ -31,8 +30,16 @@ class TestListFans:
     def test_fan_fields_present(self, client, db):
         make_fan(db, "F001", "Test Fan", "BRA", stress=45)
         fan = client.get("/api/stadium/fans").json()["fans"][0]
-        required = ["id", "fan_id", "name", "country", "stress_level",
-                    "excitement_level", "current_emotion", "prediction_confidence"]
+        required = [
+            "id",
+            "fan_id",
+            "name",
+            "country",
+            "stress_level",
+            "excitement_level",
+            "current_emotion",
+            "prediction_confidence",
+        ]
         for field in required:
             assert field in fan, f"Missing field: {field}"
 

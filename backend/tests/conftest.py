@@ -4,7 +4,8 @@ Isolated in-memory SQLite, never touches stadiumverse.db.
 """
 
 import os
-os.environ["TESTING"] = "true"   # Prevents lifespan seeding real DB
+
+os.environ["TESTING"] = "true"  # Prevents lifespan seeding real DB
 
 import pytest
 from typing import Generator
@@ -26,9 +27,14 @@ Base.metadata.create_all(bind=test_engine)
 
 from app.main import app  # noqa: E402
 from app.db_models import (  # noqa: E402
-    DigitalFan, Volunteer, CrowdSnapshot,
-    AIDecision, StadiumEvent, VolunteerTask,
+    DigitalFan,
+    Volunteer,
+    CrowdSnapshot,
+    AIDecision,
+    StadiumEvent,
+    VolunteerTask,
 )
+
 
 # Override the DB dependency globally
 def override_get_db() -> Generator[Session, None, None]:
@@ -38,10 +44,12 @@ def override_get_db() -> Generator[Session, None, None]:
     finally:
         db.close()
 
+
 app.dependency_overrides[get_db] = override_get_db
 
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────
+
 
 @pytest.fixture(scope="session")
 def client() -> Generator[TestClient, None, None]:
@@ -64,13 +72,20 @@ def db() -> Generator[Session, None, None]:
 def clean_db(db: Session) -> Generator[None, None, None]:
     """Wipe all rows before every test — guarantees test isolation."""
     yield
-    for model in [VolunteerTask, StadiumEvent, AIDecision,
-                  CrowdSnapshot, Volunteer, DigitalFan]:
+    for model in [
+        VolunteerTask,
+        StadiumEvent,
+        AIDecision,
+        CrowdSnapshot,
+        Volunteer,
+        DigitalFan,
+    ]:
         db.query(model).delete()
     db.commit()
 
 
 # ── Data factories ────────────────────────────────────────────────────────────
+
 
 def make_fan(
     db: Session,
@@ -78,17 +93,24 @@ def make_fan(
     name: str = "Test Fan",
     country: str = "BRA",
     stress: int = 30,
-    emotion: str = "excited"
+    emotion: str = "excited",
 ) -> DigitalFan:
     """
     Create a test DigitalFan in the database.
     """
     fan = DigitalFan(
-        fan_id=fan_id, name=name, country=country, flag="🇧🇷",
-        sector="N1", seat="10A",
-        stress_level=stress, excitement_level=70,
-        hunger_level=25, fatigue_level=15,
-        prediction_confidence=0.88, risk_score=max(0, stress - 30),
+        fan_id=fan_id,
+        name=name,
+        country=country,
+        flag="🇧🇷",
+        sector="N1",
+        seat="10A",
+        stress_level=stress,
+        excitement_level=70,
+        hunger_level=25,
+        fatigue_level=15,
+        prediction_confidence=0.88,
+        risk_score=max(0, stress - 30),
         current_emotion=emotion,
         current_thought="Go team!",
         memory_summary="Previous visit was great",
@@ -104,18 +126,22 @@ def make_volunteer(
     db: Session,
     vid: str = "V001",
     name: str = "Volunteer",
-    availability: str = "available"
+    availability: str = "available",
 ) -> Volunteer:
     """
     Create a test Volunteer in the database.
     """
     vol = Volunteer(
-        volunteer_id=vid, name=name,
-        languages="en,ar", skills="crowd_control",
+        volunteer_id=vid,
+        name=name,
+        languages="en,ar",
+        skills="crowd_control",
         medical_training=False,
         availability=availability,
         zone_assignment="Gate B",
-        loc_x=50.0, loc_y=50.0, tasks_today=0,
+        loc_x=50.0,
+        loc_y=50.0,
+        tasks_today=0,
     )
     db.add(vol)
     db.commit()
@@ -124,20 +150,23 @@ def make_volunteer(
 
 
 def make_snapshot(
-    db: Session,
-    total_fans: int = 87342,
-    risk: str = "healthy",
-    gate_b: float = 88.0
+    db: Session, total_fans: int = 87342, risk: str = "healthy", gate_b: float = 88.0
 ) -> CrowdSnapshot:
     """
     Create a test CrowdSnapshot in the database.
     """
     snap = CrowdSnapshot(
-        total_fans=total_fans, avg_stress=45.0, avg_excitement=65.0,
+        total_fans=total_fans,
+        avg_stress=45.0,
+        avg_excitement=65.0,
         risk_level=risk,
-        gate_a_density=70.0, gate_b_density=gate_b,
-        gate_c_density=65.0, gate_d_density=60.0,
-        queue_avg_min=6.5, weather_temp=22.0, weather_rain_pct=18.0,
+        gate_a_density=70.0,
+        gate_b_density=gate_b,
+        gate_c_density=65.0,
+        gate_d_density=60.0,
+        queue_avg_min=6.5,
+        weather_temp=22.0,
+        weather_rain_pct=18.0,
     )
     db.add(snap)
     db.commit()
@@ -151,16 +180,20 @@ def make_decision(
     decision: str = "Deploy volunteers to Gate B",
     confidence: float = 0.94,
     outcome: str = "SUCCESS",
-    match_minute: int = 67
+    match_minute: int = 67,
 ) -> AIDecision:
     """
     Create a test AIDecision in the database.
     """
     d = AIDecision(
-        match_minute=match_minute, agent=agent, decision=decision,
+        match_minute=match_minute,
+        agent=agent,
+        decision=decision,
         reasoning="Gate B at 94% capacity.",
-        confidence=confidence, outcome=outcome,
-        affected_fans=1400, impact_pct=23.0,
+        confidence=confidence,
+        outcome=outcome,
+        affected_fans=1400,
+        impact_pct=23.0,
     )
     db.add(d)
     db.commit()
@@ -172,15 +205,18 @@ def make_event(
     db: Session,
     title: str = "Gate B congestion",
     event_type: str = "crowd",
-    severity: int = 3
+    severity: int = 3,
 ) -> StadiumEvent:
     """
     Create a test StadiumEvent in the database.
     """
     e = StadiumEvent(
-        event_type=event_type, title=title,
+        event_type=event_type,
+        title=title,
         description="AI-detected crowd pressure",
-        severity=severity, zone="Gate B", resolved=False,
+        severity=severity,
+        zone="Gate B",
+        resolved=False,
     )
     db.add(e)
     db.commit()

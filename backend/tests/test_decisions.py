@@ -28,8 +28,16 @@ class TestListDecisions:
     def test_decision_fields_present(self, client, db):
         make_decision(db)
         d = client.get("/api/stadium/decisions").json()["decisions"][0]
-        for field in ["id", "match_minute", "agent", "decision",
-                      "confidence", "outcome", "affected_fans", "impact_pct"]:
+        for field in [
+            "id",
+            "match_minute",
+            "agent",
+            "decision",
+            "confidence",
+            "outcome",
+            "affected_fans",
+            "impact_pct",
+        ]:
             assert field in d
 
     def test_decisions_ordered_newest_first(self, client, db):
@@ -64,14 +72,18 @@ class TestRecordDecision:
 class TestUpdateOutcome:
     def test_update_decision_outcome(self, client, db):
         d = make_decision(db, outcome="PENDING")
-        r = client.patch(f"/api/stadium/decisions/{d.id}/outcome?outcome=SUCCESS&impact_pct=23.5")
+        r = client.patch(
+            f"/api/stadium/decisions/{d.id}/outcome?outcome=SUCCESS&impact_pct=23.5"
+        )
         assert r.status_code == 200
         data = r.json()
         assert data["outcome"] == "SUCCESS"
         assert data["impact_pct"] == 23.5
 
     def test_update_unknown_decision(self, client):
-        r = client.patch("/api/stadium/decisions/nonexistent-id/outcome?outcome=SUCCESS")
+        r = client.patch(
+            "/api/stadium/decisions/nonexistent-id/outcome?outcome=SUCCESS"
+        )
         assert r.status_code == 404
 
     def test_all_valid_outcomes(self, client, db):

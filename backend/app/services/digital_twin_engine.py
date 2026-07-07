@@ -58,8 +58,6 @@ class DigitalTwinEngine:
     """
 
     def __init__(self):
-        self.openai_client = OpenAIClient()
-        self.navigation_agent = NavigationAgent()
         self.is_running = False
         self.update_count = 0
         self.performance_metrics = {

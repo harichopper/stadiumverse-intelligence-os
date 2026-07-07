@@ -7,38 +7,39 @@ import os
 
 os.environ["TESTING"] = "true"  # Prevents lifespan seeding real DB
 
-import pytest
 from typing import Generator
+
+import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
+from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import StaticPool
-from sqlalchemy.orm import sessionmaker, Session
 
 # ── Create in-memory engine FIRST, then import app ───────────────────────────
 TEST_DB_URL = "sqlite:///:memory:"
 test_engine = create_engine(
-    TEST_DB_URL, 
+    TEST_DB_URL,
     connect_args={"check_same_thread": False},
     poolclass=StaticPool
 )
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
 
 # Now import Base & models so metadata is populated
-from app.database import Base, get_db  # noqa: E402
 import app.db_models  # noqa: F401, E402 — Registers all ORM models on Base
+from app.database import Base, get_db  # noqa: E402
 
 # Create ALL tables in the in-memory engine once at import time
 Base.metadata.create_all(bind=test_engine)
 
-from app.main import app  # noqa: E402
 from app.db_models import (  # noqa: E402
-    DigitalFan,
-    Volunteer,
-    CrowdSnapshot,
     AIDecision,
+    CrowdSnapshot,
+    DigitalFan,
     StadiumEvent,
+    Volunteer,
     VolunteerTask,
 )
+from app.main import app  # noqa: E402
 
 
 # Override the DB dependency globally

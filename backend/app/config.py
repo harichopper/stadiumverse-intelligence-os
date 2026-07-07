@@ -1,5 +1,6 @@
 """
-StadiumVerse AI V2 - Configuration Settings
+StadiumVerse Intelligence OS - Configuration Settings
+Challenge: Smart Stadiums & Tournament Operations | FIFA World Cup 2026
 """
 
 import os

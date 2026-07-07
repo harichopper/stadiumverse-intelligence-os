@@ -2,8 +2,9 @@
 Tests: Stadium Events endpoints
 """
 
-from app.db_models import StadiumEvent
 from datetime import datetime, timedelta, timezone
+
+from app.db_models import StadiumEvent
 
 
 def make_event(db, event_type="goal", title="Test Goal", severity=1):

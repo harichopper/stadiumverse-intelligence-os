@@ -2,7 +2,7 @@
 Tests: Dashboard summary endpoint
 """
 
-from .conftest import make_fan, make_volunteer, make_snapshot, make_decision
+from .conftest import make_decision, make_fan, make_snapshot, make_volunteer
 
 
 class TestDashboard:

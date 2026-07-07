@@ -1,4 +1,4 @@
-// Simple Redux store setup for StadiumVerse AI V2
+// Simple Redux store setup for StadiumVerse Intelligence OS
 import { configureStore } from '@reduxjs/toolkit';
 
 // Simple state slice

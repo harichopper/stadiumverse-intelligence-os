@@ -2,7 +2,7 @@
   "name": "stadiumverse-ai-frontend",
   "private": true,
   "version": "1.0.0",
-  "description": "StadiumVerse AI - The World's First Generative AI Stadium Digital Twin for FIFA World Cup 2026 (Smart Stadiums & Tournament Operations)",
+  "description": "StadiumVerse Intelligence OS - The World's First Generative AI Stadium Digital Twin for FIFA World Cup 2026 (Smart Stadiums & Tournament Operations)",
   "type": "module",
   "scripts": {
     "dev": "vite",

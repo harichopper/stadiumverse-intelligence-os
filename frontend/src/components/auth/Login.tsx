@@ -1,4 +1,4 @@
-// Login Component for StadiumVerse AI V2
+// Login Component for StadiumVerse Intelligence OS
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { CpuChipIcon, ShieldCheckIcon, GlobeAltIcon } from '@heroicons/react/24/outline';
@@ -36,7 +36,7 @@ const Login: React.FC = () => {
           </motion.div>
           
           <h1 className="text-3xl font-bold text-white mb-2">
-            StadiumVerse AI V2
+            StadiumVerse Intelligence OS
           </h1>
           <p className="text-gray-300 text-lg">
             "The Living Brain of the Stadium"

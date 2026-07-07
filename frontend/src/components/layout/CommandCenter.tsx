@@ -1,4 +1,4 @@
-// Command Center Component for StadiumVerse AI V2
+// Command Center Component for StadiumVerse Intelligence OS
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
@@ -161,7 +161,7 @@ const CommandCenter: React.FC = () => {
           </h2>
           
           <div className="bg-black bg-opacity-50 rounded-lg p-4 h-64 overflow-y-auto font-mono text-sm">
-            <div className="text-green-400 mb-2">StadiumVerse AI V2 Command Terminal</div>
+            <div className="text-green-400 mb-2">StadiumVerse Intelligence OS Command Terminal</div>
             <div className="text-gray-400 mb-4">Type commands above or use quick actions</div>
             
             {commands.map((cmd, index) => (

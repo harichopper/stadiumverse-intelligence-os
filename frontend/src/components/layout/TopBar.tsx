@@ -44,6 +44,11 @@ export const TopBar: React.FC = () => {
           <div style={{ fontSize: 11, fontWeight: 600, color: '#F8FAFC', letterSpacing: '.1em', textTransform: 'uppercase' }}>StadiumVerse</div>
           <div style={{ fontSize: 8, color: '#3B82F6', letterSpacing: '.2em', textTransform: 'uppercase' }}>INTELLIGENCE OS</div>
         </div>
+        
+        <div style={{ marginLeft: 16, padding: '2px 8px', background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: 4 }}>
+          <div style={{ fontSize: 9, color: '#93C5FD', letterSpacing: '.05em' }}>FIFA World Cup 2026™</div>
+          <div style={{ fontSize: 7, color: '#60A5FA', letterSpacing: '.05em', textTransform: 'uppercase' }}>Smart Stadiums & Ops</div>
+        </div>
       </div>
 
       <div style={{ width: 1, height: 28, background: 'rgba(255,255,255,.08)', flexShrink: 0 }} aria-hidden="true" />

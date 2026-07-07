@@ -1,4 +1,4 @@
-// Loading Spinner Component for StadiumVerse AI V2
+// Loading Spinner Component for StadiumVerse Intelligence OS
 import React from 'react';
 import { motion } from 'framer-motion';
 
@@ -24,7 +24,7 @@ const LoadingSpinner: React.FC = () => {
           transition={{ delay: 0.2 }}
           className="text-2xl font-bold text-white mb-2"
         >
-          🧠 Loading StadiumVerse AI V2
+          🧠 Loading StadiumVerse Intelligence OS
         </motion.h2>
         
         <motion.p

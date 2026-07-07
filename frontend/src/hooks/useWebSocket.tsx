@@ -1,4 +1,4 @@
-// WebSocket hook for StadiumVerse AI V2
+// WebSocket hook for StadiumVerse Intelligence OS
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 type EventHandler = (data: unknown) => void;
@@ -66,4 +66,4 @@ export const useWebSocket = () => {
     throw new Error('useWebSocket must be used within a WebSocketProvider');
   }
   return context;
-};
+};

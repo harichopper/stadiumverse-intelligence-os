@@ -1,4 +1,4 @@
-// Error Boundary Component for StadiumVerse AI V2
+// Error Boundary Component for StadiumVerse Intelligence OS
 import React from 'react';
 import { motion } from 'framer-motion';
 
@@ -22,7 +22,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('StadiumVerse AI V2 Error:', error, errorInfo);
+    console.error('StadiumVerse Intelligence OS Error:', error, errorInfo);
   }
 
   render() {
@@ -37,7 +37,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
             <div className="text-6xl mb-4">🧠</div>
             
             <h2 className="text-2xl font-bold text-white mb-4">
-              StadiumVerse AI V2 Error
+              StadiumVerse Intelligence OS Error
             </h2>
             
             <p className="text-gray-300 mb-6">

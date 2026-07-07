@@ -3,7 +3,7 @@
  * Talks to FastAPI backend at localhost:8000
  */
 
-const BASE = '/api/stadium';   // proxied by Vite to localhost:8000
+const BASE = '/api/stadium';   // proxied by Vite dev → backend; in prod Vercel rewrites handle it
 
 async function get<T>(path: string): Promise<T> {
   const r = await fetch(`${BASE}${path}`);

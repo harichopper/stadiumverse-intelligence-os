@@ -115,6 +115,16 @@ const NeuralVisualization: React.FC = () => {
           </text>
         </g>
       ))}
+      {pulses.map((pulse, i) => (
+        <motion.circle
+          key={pulse}
+          cx={60} cy={120} r={4}
+          fill="#3B82F6"
+          initial={{ opacity: 0.8, scale: 1 }}
+          animate={{ opacity: 0, scale: 3, cx: 320, cy: 120 }}
+          transition={{ duration: 1.5, delay: i * 0.1 }}
+        />
+      ))}
     </svg>
   );
 };

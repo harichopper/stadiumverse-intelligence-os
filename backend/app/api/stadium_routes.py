@@ -4,7 +4,7 @@ All REST endpoints consumed by the frontend.
 """
 
 import random
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
@@ -112,7 +112,7 @@ def crowd_history(
     db: Session = Depends(get_db),
 ) -> dict:
     """Retrieve historical crowd snapshots."""
-    since = datetime.utcnow() - timedelta(minutes=minutes)
+    since = datetime.now(timezone.utc) - timedelta(minutes=minutes)
     snaps = (
         db.query(CrowdSnapshot)
         .filter(CrowdSnapshot.timestamp >= since)
@@ -246,5 +246,5 @@ def dashboard_summary(db: Session = Depends(get_db)):
         "volunteers_available": vol_available,
         "recent_decisions": [d.to_dict() for d in recent_decisions],
         "recent_events": [e.to_dict() for e in recent_events],
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
     }

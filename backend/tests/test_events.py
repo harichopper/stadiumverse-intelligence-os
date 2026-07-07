@@ -3,7 +3,7 @@ Tests: Stadium Events endpoints
 """
 
 from app.db_models import StadiumEvent
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 
 def make_event(db, event_type="goal", title="Test Goal", severity=1):
@@ -14,7 +14,7 @@ def make_event(db, event_type="goal", title="Test Goal", severity=1):
         severity=severity,
         zone="Field",
         resolved=True,
-        resolved_at=datetime.utcnow() - timedelta(minutes=5),
+        resolved_at=datetime.now(timezone.utc) - timedelta(minutes=5),
     )
     db.add(event)
     db.commit()

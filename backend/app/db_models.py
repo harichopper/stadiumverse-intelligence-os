@@ -4,25 +4,33 @@ All tables in one file, SQLite-compatible (no PostGIS / UUID columns).
 """
 
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict
+
 from sqlalchemy import (
-    Column,
-    String,
-    Integer,
-    Float,
     Boolean,
+    Column,
     DateTime,
-    Text,
+    Float,
     ForeignKey,
+    Integer,
+    String,
+    Text,
 )
 from sqlalchemy.orm import relationship
+
 from .database import Base
+
+
+def _now() -> datetime:
+    """Return timezone-aware current UTC time."""
+    return datetime.now(timezone.utc)
 
 
 def _uid() -> str:
     """Generate a unique UUID string for primary keys."""
     return str(uuid.uuid4())
+
 
 
 # ── Fans ──────────────────────────────────────────────────────────────────────
@@ -65,8 +73,8 @@ class DigitalFan(Base):
 
     # Meta fields
     is_active = Column(Boolean, default=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=_now)
+    updated_at = Column(DateTime, default=_now, onupdate=_now)
 
     movements = relationship(
         "FanMovement", back_populates="fan", cascade="all, delete-orphan"
@@ -117,7 +125,7 @@ class FanMovement(Base):
     loc_x = Column(Float, nullable=False)
     loc_y = Column(Float, nullable=False)
     speed = Column(Float, default=1.2)
-    timestamp = Column(DateTime, default=datetime.utcnow)
+    timestamp = Column(DateTime, default=_now)
 
     fan = relationship("DigitalFan", back_populates="movements")
 
@@ -135,7 +143,7 @@ class FanPrediction(Base):
     description = Column(Text)
     confidence_score = Column(Float, default=0.5)
     predicted_time = Column(DateTime, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=_now)
 
     fan = relationship("DigitalFan", back_populates="predictions")
 
@@ -160,7 +168,7 @@ class Volunteer(Base):
     loc_y = Column(Float, default=50.0)
     tasks_today = Column(Integer, default=0)
     is_active = Column(Boolean, default=True)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    updated_at = Column(DateTime, default=_now, onupdate=_now)
 
     tasks = relationship(
         "VolunteerTask", back_populates="volunteer", cascade="all, delete-orphan"
@@ -198,7 +206,7 @@ class VolunteerTask(Base):
     description = Column(Text)
     priority = Column(Integer, default=3)  # 1=low, 5=high
     status = Column(String(20), default="assigned")
-    assigned_at = Column(DateTime, default=datetime.utcnow)
+    assigned_at = Column(DateTime, default=_now)
     completed_at = Column(DateTime)
     assigned_by_ai = Column(Boolean, default=False)
 
@@ -228,7 +236,7 @@ class CrowdSnapshot(Base):
     __tablename__ = "crowd_snapshots"
 
     id = Column(String(36), primary_key=True, default=_uid)
-    timestamp = Column(DateTime, default=datetime.utcnow, index=True)
+    timestamp = Column(DateTime, default=_now, index=True)
     total_fans = Column(Integer, default=0)
     avg_stress = Column(Float, default=50.0)
     avg_excitement = Column(Float, default=50.0)
@@ -270,7 +278,7 @@ class AIDecision(Base):
     __tablename__ = "ai_decisions"
 
     id = Column(String(36), primary_key=True, default=_uid)
-    timestamp = Column(DateTime, default=datetime.utcnow, index=True)
+    timestamp = Column(DateTime, default=_now, index=True)
     match_minute = Column(Integer, default=0)
     agent = Column(String(50), default="Coordinator")
     decision = Column(Text, nullable=False)
@@ -305,7 +313,7 @@ class StadiumEvent(Base):
     __tablename__ = "stadium_events"
 
     id = Column(String(36), primary_key=True, default=_uid)
-    timestamp = Column(DateTime, default=datetime.utcnow, index=True)
+    timestamp = Column(DateTime, default=_now, index=True)
     event_type = Column(String(50), nullable=False)
     title = Column(String(200), nullable=False)
     description = Column(Text)

@@ -2,11 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { api, CrowdSnap, AIDecisionData } from '../../services/api';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const EChart: React.FC<{ option: any; style?: React.CSSProperties }> = ({ option, style }) => {
+const EChart: React.FC<{ option: unknown; style?: React.CSSProperties }> = ({ option, style }) => {
   const ref = useRef<HTMLDivElement>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const chartRef = useRef<any>(null);
+  const chartRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -129,9 +127,10 @@ export const AnalyticsPage: React.FC = () => {
     tooltip: {
       trigger: 'axis', backgroundColor: 'rgba(5,8,22,.9)', borderColor: '#10B981',
       textStyle: { color: '#F8FAFC', fontSize: 11 },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      formatter: (params: any[]) => {
-        const d = decisions[params[0]?.dataIndex];
+      formatter: (params: { dataIndex: number }[]) => {
+        const p = params[0];
+        if (!p || typeof p.dataIndex !== 'number') return '';
+        const d = decisions[p.dataIndex];
         return d ? `${d.agent}: ${d.decision.slice(0, 40)}...` : '';
       },
     },

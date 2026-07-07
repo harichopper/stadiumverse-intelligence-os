@@ -1,11 +1,12 @@
 """
 StadiumVerse Intelligence OS — Database Seeder
-Populates SQLite with realistic demo data
+Populates SQLite with realistic demo data for FIFA World Cup 2026 match scenario.
 """
 
 import math
 import random
 from datetime import datetime, timedelta
+from sqlalchemy.orm import Session
 from .database import SessionLocal
 from .db_models import (
     DigitalFan, Volunteer, VolunteerTask,
@@ -37,7 +38,8 @@ VOLUNTEER_DATA = [
 ]
 
 
-def seed_fans(db):
+def seed_fans(db: Session) -> None:
+    """Seed the database with representative digital fan twins if none exist."""
     if db.query(DigitalFan).count() > 0:
         return
     for i, (fan_id,name,country,flag,lang,age,team,sector,seat,emotion,stress,excitement,thought,memory,prediction,confidence) in enumerate(FANS_DATA):
@@ -63,7 +65,8 @@ def seed_fans(db):
     print(f"✅ Seeded {len(FANS_DATA)} digital fans")
 
 
-def seed_volunteers(db):
+def seed_volunteers(db: Session) -> None:
+    """Seed the database with stadium volunteer profiles if none exist."""
     if db.query(Volunteer).count() > 0:
         return
     positions = [(15,50),(85,50),(50,15),(50,85),(20,30),(80,30),(20,70),(80,70)]
@@ -83,7 +86,8 @@ def seed_volunteers(db):
     print(f"✅ Seeded {len(VOLUNTEER_DATA)} volunteers")
 
 
-def seed_crowd_snapshots(db):
+def seed_crowd_snapshots(db: Session) -> None:
+    """Seed 90 minutes of historical crowd snapshot data if none exist."""
     if db.query(CrowdSnapshot).count() > 0:
         return
     now = datetime.utcnow()
@@ -108,7 +112,8 @@ def seed_crowd_snapshots(db):
     print("✅ Seeded 90 crowd snapshots")
 
 
-def seed_ai_decisions(db):
+def seed_ai_decisions(db: Session) -> None:
+    """Seed historical AI decision records for the Black Box Recorder if none exist."""
     if db.query(AIDecision).count() > 0:
         return
     decisions = [
@@ -133,7 +138,8 @@ def seed_ai_decisions(db):
     print(f"✅ Seeded {len(decisions)} AI decisions")
 
 
-def seed_events(db):
+def seed_events(db: Session) -> None:
+    """Seed historical stadium events for the event timeline if none exist."""
     if db.query(StadiumEvent).count() > 0:
         return
     events = [
@@ -157,7 +163,8 @@ def seed_events(db):
     print(f"✅ Seeded {len(events)} stadium events")
 
 
-def run_seed():
+def run_seed() -> None:
+    """Execute all seed functions in dependency order."""
     db = SessionLocal()
     try:
         seed_fans(db)

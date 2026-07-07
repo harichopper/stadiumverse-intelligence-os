@@ -20,7 +20,11 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 
-def get_db():
+from typing import Generator
+from sqlalchemy.orm import Session
+
+def get_db() -> Generator[Session, None, None]:
+    """Provide a transactional scope around a series of operations."""
     db = SessionLocal()
     try:
         yield db
@@ -28,7 +32,8 @@ def get_db():
         db.close()
 
 
-def init_db():
+def init_db() -> None:
+    """Initialize the SQLite database and create all tables."""
     from . import db_models  # noqa — registers all models
     Base.metadata.create_all(bind=engine)
     print(f"✅ SQLite DB initialised: {DB_PATH}")

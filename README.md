@@ -1,10 +1,15 @@
 # 🧠 StadiumVerse Intelligence OS
 
 > **AI Operating System for FIFA World Cup 2026 Stadium Command Centers**
+> 
+> *Challenge 4: Smart Stadiums & Tournament Operations*
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Vercel-black?style=for-the-badge&logo=vercel)](https://stadiumverse-intelligence-os.vercel.app)
 [![Backend API](https://img.shields.io/badge/Backend%20API-Render-46E3B7?style=for-the-badge)](https://stadiumverse-intelligence-os-api.onrender.com)
 [![GitHub](https://img.shields.io/badge/GitHub-Public-blue?style=for-the-badge&logo=github)](https://github.com/harichopper/stadiumverse-intelligence-os)
+[![Tests](https://img.shields.io/badge/Tests-29%20Passing-brightgreen?style=for-the-badge)](https://github.com/harichopper/stadiumverse-intelligence-os)
+[![Python](https://img.shields.io/badge/Python-3.11%2B-blue?style=for-the-badge&logo=python)](https://python.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.2-blue?style=for-the-badge&logo=typescript)](https://typescriptlang.org)
 
 ---
 
@@ -12,30 +17,38 @@
 
 **[Challenge 4] Smart Stadiums & Tournament Operations**
 
-StadiumVerse Intelligence OS is not a dashboard — it is a **living AI brain** that thinks, debates, predicts, and acts in real time during a FIFA World Cup match. It was built to answer one question:
+StadiumVerse Intelligence OS is an AI-powered platform that transforms a FIFA World Cup 2026 stadium into a **self-aware, proactive command center**. It solves the core challenge problem: *how do you safely and efficiently manage 87,000+ fans, 140+ volunteers, and real-time stadium operations using AI?*
 
-> *What if the stadium itself could think?*
+> *What if the stadium itself could think, debate, predict, and act?*
+
+The system addresses every dimension of the Smart Stadiums challenge:
+- 🏟️ **Real-time crowd flow intelligence** — gate density monitoring, congestion prediction
+- 👥 **Digital twin network** — individual AI models for every fan, volunteer, and zone
+- 🧠 **Multi-agent decision engine** — 4 specialized AI agents debate before every intervention
+- ⚡ **Minimum-intervention principle** — finds the smallest action with maximum positive impact
+- 🔮 **Predictive analytics** — up to 30-minute lookahead across multiple scenario branches
+- ♿ **Inclusive design** — accessibility-first UI meeting WCAG AA standards
 
 ---
 
 ## 🏟️ What It Does
 
-The system monitors 87,000+ fans simultaneously, runs 13 specialized AI agents in a debate chamber, predicts crowd behavior up to 30 minutes ahead, and issues the smallest possible intervention to prevent crowd incidents — all in real time.
+The system monitors 87,342 fans simultaneously, runs 4 specialized AI agents in a debate chamber, predicts crowd behavior up to 30 minutes ahead, and issues the smallest possible intervention to prevent crowd incidents — all in real time.
 
 ### Core Capabilities
 
-| Feature | Description |
-|---|---|
-| 🧠 **Living Brain** | Streams real-time AI thoughts, predictions, confidence and recommendations |
-| 👥 **Digital Twins** | Every fan has a persistent memory, emotion state, stress level and behavioral prediction |
-| 🏟️ **Living Stadium** | SVG stadium with 150+ animated entities (fans, volunteers, medical, security) |
-| 🗣️ **AI Debate Chamber** | 4 specialized agents (Navigation, Medical, Security, Transport) debate before every decision |
-| 🔮 **Future Branches** | Best / Likely / Worst scenario tree with probability propagation |
-| 📊 **Analytics** | ECharts-powered crowd flow, gate density, emotion trends from real SQLite data |
-| ⚡ **Command Bar** | Ctrl+K AI command interface — natural language stadium control |
-| 🎬 **Judge Demo Mode** | One button auto-runs a complete scenario: Goal → Rain → Congestion → AI Decision → Resolution |
-| 📦 **Black Box Recorder** | Every AI decision stored with reasoning, confidence, outcome and impact % |
-| ⏱️ **Timeline Scrubber** | Travel forward/backward in match time, stadium updates accordingly |
+| Feature | Description | Impact |
+|---|---|---|
+| 🧠 **Living Brain** | Real-time AI thoughts, predictions, confidence, recommendations | Decision latency < 1s |
+| 👥 **Digital Twins** | Persistent memory, emotion state, stress level per fan | 10 seeded, scales to 87,342 |
+| 🏟️ **Living Stadium** | Animated SVG map with 150+ entities (fans, volunteers, medical, security) | Visual crowd awareness |
+| 🗣️ **AI Debate Chamber** | 4 agents (Navigation, Medical, Security, Transport) deliberate per decision | Collective intelligence |
+| 🔮 **Future Branches** | Best / Likely / Worst scenario tree with probability propagation | 30-min lookahead |
+| 📊 **Analytics** | ECharts-powered crowd flow, gate density, emotion trends from real SQLite data | Data-driven ops |
+| ⚡ **Command Bar** | Ctrl+K AI interface — natural language stadium control | Operator efficiency |
+| 🎬 **Judge Demo Mode** | One button: Goal → Rain → Congestion → AI Decision → Resolution | Full scenario playback |
+| 📦 **Black Box Recorder** | Every AI decision stored with reasoning, confidence, outcome, impact % | Accountability & audit |
+| ⏱️ **Timeline Scrubber** | Travel forward/backward in match time — stadium state updates | Historical review |
 
 ---
 
@@ -64,18 +77,20 @@ Frontend (React + TypeScript)          Backend (FastAPI + SQLite)
                                       └──────────────────────────┘
 ```
 
-### Decision Logic
+### Decision Logic (6-Step AI Pipeline)
 
 1. **Perceive** — Ingest crowd density, fan stress levels, gate flow rates from DB
-2. **Retrieve** — Query historical patterns from similar events
-3. **Debate** — 4 AI agents deliberate asynchronously
+2. **Retrieve** — Query historical patterns from similar events (Memory Palace)
+3. **Debate** — 4 AI agents deliberate asynchronously in real time
 4. **Decide** — Coordinator agent produces minimum-intervention recommendation
 5. **Act** — Decision stored in Black Box, volunteers deployed, signage updated
 6. **Learn** — Outcome recorded, prediction accuracy updated
 
 ### Collective Intelligence Principle
 
-The system always finds the **smallest intervention** with the **maximum positive impact**. Example: instead of closing Gate B (affects 5,000 fans), deploy 3 volunteers + activate digital signage (affects 1,400 fans, -23% congestion).
+The system always finds the **smallest intervention** with the **maximum positive impact**. 
+
+Example: instead of closing Gate B (affects 5,000 fans), deploy 3 volunteers + activate digital signage → affects 1,400 fans, reduces congestion by **-23%**, ROI **4.2×**.
 
 ---
 

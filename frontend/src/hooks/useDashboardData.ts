@@ -46,5 +46,6 @@ export const useDashboardData = () => {
     fetchDash();
     const iv = setInterval(fetchDash, 5000);
     return () => clearInterval(iv);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 };

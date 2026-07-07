@@ -141,7 +141,7 @@ const AgentDebate: React.FC = () => {
 };
 
 export const LivingBrainPanel: React.FC = () => {
-  const { currentThought, currentPrediction, confidence, isThinking } = useAppStore();
+  const { currentThought, currentPrediction, confidence } = useAppStore();
   const [activeTab, setActiveTab] = useState<'thoughts' | 'debate' | 'storyteller'>('thoughts');
   const [storyPhase, setStoryPhase] = useState(0);
 
@@ -166,6 +166,7 @@ export const LivingBrainPanel: React.FC = () => {
       setStoryPhase(p => (p + 1) % storySteps.length);
     }, 5000);
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const tabs = [
@@ -221,7 +222,7 @@ export const LivingBrainPanel: React.FC = () => {
               color: activeTab === tab.id ? '#8B5CF6' : '#64748B',
               border: `1px solid ${activeTab === tab.id ? 'rgba(139,92,246,0.3)' : 'transparent'}`,
             }}
-            onClick={() => setActiveTab(tab.id as any)}
+            onClick={() => setActiveTab(tab.id as 'thoughts' | 'debate' | 'storyteller')}
           >
             {tab.icon}
             {tab.label}

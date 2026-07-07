@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '../../store/appStore';
 
@@ -47,7 +47,7 @@ export const LivingStadium: React.FC = () => {
   const animFrameRef = useRef<number>(0);
   const [hoveredFan, setHoveredFan] = useState<FanDetail | null>(null);
   const [heatmapVisible, setHeatmapVisible] = useState(true);
-  const { selectedFanId, setSelectedFanId, timelineOffset } = useAppStore();
+  const { setSelectedFanId } = useAppStore();
 
   const W = 400, H = 360;
 
@@ -249,14 +249,7 @@ export const LivingStadium: React.FC = () => {
         ctx.globalAlpha = 1;
       });
 
-      // Labels
-      const labelStyle = { fan: '👥', volunteer: '🦺', medical: '🏥', security: '🛡️' };
-      const counts = {
-        fan: entitiesRef.current.filter(e => e.type === 'fan').length * 700,
-        volunteer: entitiesRef.current.filter(e => e.type === 'volunteer').length,
-        medical: entitiesRef.current.filter(e => e.type === 'medical').length,
-        security: entitiesRef.current.filter(e => e.type === 'security').length,
-      };
+      // Labels — used for section identification
 
       // Section labels
       SECTIONS.forEach(sec => {
@@ -343,12 +336,8 @@ export const LivingStadium: React.FC = () => {
             maxWidth: '100%',
             maxHeight: '100%',
           }}
-          onClick={(e) => {
-            const rect = (e.target as HTMLCanvasElement).getBoundingClientRect();
-            const scaleX = W / rect.width;
-            const scaleY = H / rect.height;
-            const x = (e.clientX - rect.left) * scaleX;
-            const y = (e.clientY - rect.top) * scaleY;
+          onClick={() => {
+            // x and y were not used
 
             // Find nearest fan to click
             const nearestFan = FANS[Math.floor(Math.random() * FANS.length)];

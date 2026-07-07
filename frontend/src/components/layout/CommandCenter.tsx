@@ -1,12 +1,11 @@
 // Command Center Component for StadiumVerse AI V2
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  CpuChipIcon, 
-  CommandLineIcon, 
+import {
+  CpuChipIcon,
+  CommandLineIcon,
   BoltIcon,
-  ChartBarIcon,
-  ExclamationTriangleIcon
+  ExclamationTriangleIcon,
 } from '@heroicons/react/24/outline';
 
 const CommandCenter: React.FC = () => {

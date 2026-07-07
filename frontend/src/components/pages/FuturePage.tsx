@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { GitBranch, TrendingUp, TrendingDown, Minus, ChevronRight } from 'lucide-react';
+import { GitBranch, TrendingUp, TrendingDown, Minus } from 'lucide-react';
 
 interface Branch {
   id: string;

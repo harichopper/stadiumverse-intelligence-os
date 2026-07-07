@@ -266,7 +266,7 @@ export const Dashboard: React.FC = () => {
     if(demoStep>=DEMO.length){setIsDemoRunning(false);setDemoStep(0);return;}
     const t=setTimeout(()=>setDemoStep(s=>s+1),2200);
     return()=>clearTimeout(t);
-  },[isDemoRunning,demoStep]);
+  },[isDemoRunning, demoStep, DEMO.length, setIsDemoRunning]);
 
   const cards:CardProps[] = [
     {title:'Crowd',value:metrics.crowd,icon:<Users size={13}/>,color:'#3B82F6',status:'good',spark:[78,82,85,83,87,89,87],delay:.05},

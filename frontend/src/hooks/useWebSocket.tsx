@@ -1,14 +1,22 @@
 // WebSocket hook for StadiumVerse AI V2
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
+type EventHandler = (data: unknown) => void;
+
+interface MockSocket {
+  on: (event: string, callback: EventHandler) => void;
+  off: (event: string, callback: EventHandler) => void;
+  emit: (event: string, data: unknown) => void;
+}
+
 interface WebSocketContextType {
-  socket: any;
+  socket: MockSocket | null;
   isConnected: boolean;
 }
 
 const WebSocketContext = createContext<WebSocketContextType>({
   socket: null,
-  isConnected: false
+  isConnected: false,
 });
 
 interface WebSocketProviderProps {
@@ -17,26 +25,25 @@ interface WebSocketProviderProps {
 }
 
 export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ url, children }) => {
-  const [socket, setSocket] = useState<any>(null);
+  const [socket, setSocket] = useState<MockSocket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    // For now, we'll simulate a WebSocket connection
-    // In production, this would connect to the actual WebSocket endpoint
+    // Simulated WebSocket connection — production would connect to the real endpoint
     setIsConnected(true);
-    
-    const mockSocket = {
-      on: (event: string, callback: Function) => {
-        console.log(`Mock WebSocket: Listening for ${event}`);
+
+    const mockSocket: MockSocket = {
+      on: (_event: string, _callback: EventHandler) => {
+        // Register listener — production implementation
       },
-      off: (event: string, callback: Function) => {
-        console.log(`Mock WebSocket: Stopped listening for ${event}`);
+      off: (_event: string, _callback: EventHandler) => {
+        // Deregister listener — production implementation
       },
-      emit: (event: string, data: any) => {
-        console.log(`Mock WebSocket: Emitting ${event}`, data);
-      }
+      emit: (_event: string, _data: unknown) => {
+        // Emit event — production implementation
+      },
     };
-    
+
     setSocket(mockSocket);
 
     return () => {
@@ -52,10 +59,11 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ url, child
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useWebSocket = () => {
   const context = useContext(WebSocketContext);
   if (!context) {
     throw new Error('useWebSocket must be used within a WebSocketProvider');
   }
   return context;
-};
+};

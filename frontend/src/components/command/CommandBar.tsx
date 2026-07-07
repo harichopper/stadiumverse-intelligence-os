@@ -47,7 +47,7 @@ export const CommandBar: React.FC = () => {
     };
     window.addEventListener('keydown', h);
     return () => window.removeEventListener('keydown', h);
-  }, [commandBarOpen, filtered, sel]);
+  }, [commandBarOpen, filtered, sel, setCommandBarOpen]);
 
   const run = (label: string) => {
     setThinking(true); setResult(null);

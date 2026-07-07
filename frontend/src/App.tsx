@@ -23,7 +23,7 @@ const Background: React.FC = () => {
   useEffect(() => {
     const c = ref.current; if (!c) return;
     const ctx = c.getContext('2d')!;
-    let raf = 0, t = 0;
+    let raf = 0;
     const resize = () => { c.width = innerWidth; c.height = innerHeight; };
     resize(); window.addEventListener('resize', resize);
     const COLS = ['#3B82F6','#8B5CF6','#06B6D4','#10B981'];

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Brain, Zap, Clock, Cpu, Activity, Database, TrendingUp, ChevronRight } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Brain, Clock, Cpu, Activity, Database, TrendingUp, ChevronRight } from 'lucide-react';
 import { api, AIDecisionData } from '../../services/api';
 
 const ReasoningChain: React.FC = () => {
@@ -16,7 +16,7 @@ const ReasoningChain: React.FC = () => {
   useEffect(() => {
     const interval = setInterval(() => setActive(a => (a + 1) % steps.length), 1800);
     return () => clearInterval(interval);
-  }, []);
+  }, [steps.length]);
 
   return (
     <div className="flex items-center gap-2 overflow-x-auto pb-2">
@@ -55,7 +55,6 @@ const ReasoningChain: React.FC = () => {
 };
 
 const NeuralVisualization: React.FC = () => {
-  const [pulses, setPulses] = useState<number[]>([]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -123,7 +122,7 @@ export const AIBrainPage: React.FC = () => {
   const [tokenUsage, setTokenUsage] = useState(24819);
   const [responseTime, setResponseTime] = useState(0.43);
   const [memUsed, setMemUsed] = useState(78);
-  const [decisions, setDecisions] = useState<AIDecisionData[]>([]);
+  const [decisions, setDecisions] = useState<AIDecisionData[]>([]); // eslint-disable-line
 
   useEffect(() => {
     api.decisions(10).then(r => setDecisions(r.decisions)).catch(() => {});

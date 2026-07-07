@@ -13,8 +13,9 @@ const initialState = {
   }
 };
 
+type Action = { type: string };
 // Simple reducer
-const rootReducer = (state = initialState, action: any) => {
+const rootReducer = (state = initialState, action: Action) => {
   switch (action.type) {
     default:
       return state;

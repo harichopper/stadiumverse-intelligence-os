@@ -40,7 +40,7 @@ export const MetricCard: React.FC<MetricCardProps> = ({
   const numVal = typeof value === 'number' ? value : parseFloat(String(value).replace(/,/g, ''));
 
   useEffect(() => {
-    let start = 0;
+    const start = 0;
     const end = numVal;
     const duration = 1500;
     const startTime = Date.now();

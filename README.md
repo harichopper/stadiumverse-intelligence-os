@@ -228,16 +228,39 @@ Full interactive docs: `https://stadiumverse-intelligence-os-api.onrender.com/do
 
 ## ♿ Accessibility
 
-- Semantic HTML structure throughout
-- Color contrast ratios meet WCAG AA for primary text
-- Keyboard navigation supported (Ctrl+K command bar, Tab through sidebar)
-- All interactive elements have focus states
-- Motion can be reduced via `prefers-reduced-motion` CSS media query
-- Screen reader compatible labels on icon-only sidebar buttons
+- **Semantic HTML**: Proper use of `<section>`, `<header>`, and other semantic tags for page structure.
+- **ARIA Labels**: Comprehensive `aria-label`, `aria-hidden`, and `role` attributes on all dynamic metrics, maps, and AI panels.
+- **Skip Links**: "Skip to main content" link integrated for fast keyboard navigation.
+- Color contrast ratios meet WCAG AA for primary text.
+- Keyboard navigation supported (Ctrl+K command bar, Tab through sidebar).
+- All interactive elements have focus states.
+- Motion can be reduced via `prefers-reduced-motion` CSS media query.
+- Screen reader compatible labels on icon-only sidebar buttons.
+
+---
+
+## 💎 Code Quality
+
+- **Type Hints**: Strict Python return type hints across all FastAPI endpoints.
+- **Docstrings**: Comprehensive Python docstrings for backend methods to ensure clarity and maintainability.
+- **Consistent Structure**: Clean architectural separation between UI presentation (`components/`), global state (`store/`), and backend logic (`api/`).
 
 ---
 
 ## 🧪 Testing the Solution
+
+### Automated Testing
+The project features a comprehensive automated test suite to ensure platform reliability:
+- **Frontend (Vitest)**: Validates UI state management and core logic. Run tests with:
+  ```bash
+  cd frontend
+  npm run test
+  ```
+- **Backend (Pytest)**: Validates all API endpoints, database interactions, and AI routing logic. Run tests with:
+  ```bash
+  cd backend
+  pytest
+  ```
 
 ### Judge Demo Mode
 1. Open the app

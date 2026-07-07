@@ -21,6 +21,8 @@ const Card: React.FC<CardProps> = ({title,value,unit,subtitle,icon,color,status,
   const sc = status==='good'?'#10B981':status==='warn'?'#F59E0B':'#EF4444';
   return (
     <motion.div
+      role="region"
+      aria-label={`${title} Metric`}
       initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay,duration:.4}}
       whileHover={{y:-3,boxShadow:`0 16px 40px rgba(0,0,0,.4),0 0 20px ${color}18`}}
       style={{background:'rgba(255,255,255,.04)',border:'1px solid rgba(255,255,255,.07)',borderRadius:14,padding:'12px',cursor:'default',position:'relative',overflow:'hidden'}}>
@@ -73,15 +75,16 @@ const StadiumMap: React.FC = () => {
   const colors:Record<string,string> = {fan:'#3B82F6',volunteer:'#10B981',medical:'#EF4444',security:'#F59E0B'};
 
   return (
-    <div style={{width:'100%',height:'100%',display:'flex',flexDirection:'column'}}>
+    <section aria-label="Living Stadium Map" style={{width:'100%',height:'100%',display:'flex',flexDirection:'column'}}>
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:8}}>
-        <span style={{fontSize:11,fontWeight:600,color:'#F8FAFC'}}>Living Stadium</span>
+        <h2 style={{fontSize:11,fontWeight:600,color:'#F8FAFC',margin:0}}>Living Stadium</h2>
         <motion.span style={{fontSize:9,color:'#10B981',display:'flex',alignItems:'center',gap:4}}
-          animate={{opacity:[1,.5,1]}} transition={{duration:2,repeat:Infinity}}>
+          animate={{opacity:[1,.5,1]}} transition={{duration:2,repeat:Infinity}}
+          aria-hidden="true">
           <span style={{width:6,height:6,borderRadius:'50%',background:'#10B981',display:'inline-block'}}/>LIVE
         </motion.span>
       </div>
-      <div style={{flex:1,position:'relative',background:'rgba(5,8,22,.6)',border:'1px solid rgba(59,130,246,.15)',borderRadius:12,overflow:'hidden'}}>
+      <div style={{flex:1,position:'relative',background:'rgba(5,8,22,.6)',border:'1px solid rgba(59,130,246,.15)',borderRadius:12,overflow:'hidden'}} aria-hidden="true">
         <svg viewBox="0 0 100 100" style={{width:'100%',height:'100%',position:'absolute',inset:0}}>
           {/* field */}
           <ellipse cx="50" cy="50" rx="22" ry="16" fill="rgba(16,185,129,.1)" stroke="rgba(16,185,129,.3)" strokeWidth=".5"/>
@@ -119,7 +122,7 @@ const StadiumMap: React.FC = () => {
         </div>
       </div>
       {/* heatmap legend */}
-      <div style={{display:'flex',gap:12,marginTop:6,justifyContent:'center'}}>
+      <div style={{display:'flex',gap:12,marginTop:6,justifyContent:'center'}} aria-label="Gate Congestion Heatmap">
         {[['Gate A','#10B981','72%'],['Gate B','#EF4444','94%'],['Gate C','#F59E0B','81%'],['Gate D','#3B82F6','68%']].map(([g,c,pct])=>(
           <div key={g} style={{textAlign:'center'}}>
             <div style={{fontSize:9,color:'#64748B'}}>{g}</div>
@@ -127,7 +130,7 @@ const StadiumMap: React.FC = () => {
           </div>
         ))}
       </div>
-    </div>
+    </section>
   );
 };
 
@@ -148,18 +151,18 @@ const BrainPanel: React.FC = () => {
   },[currentThought]);
 
   return (
-    <div style={{display:'flex',flexDirection:'column',height:'100%'}}>
+    <section aria-label="Living Brain Panel" style={{display:'flex',flexDirection:'column',height:'100%'}}>
       {/* header */}
-      <div style={{display:'flex',alignItems:'center',gap:8,padding:'12px 14px',borderBottom:'1px solid rgba(255,255,255,.06)'}}>
+      <header style={{display:'flex',alignItems:'center',gap:8,padding:'12px 14px',borderBottom:'1px solid rgba(255,255,255,.06)'}}>
         <motion.div animate={{scale:[1,1.3,1],boxShadow:['0 0 6px rgba(139,92,246,.3)','0 0 18px rgba(139,92,246,.7)','0 0 6px rgba(139,92,246,.3)']}} transition={{duration:2,repeat:Infinity}}
-          style={{width:8,height:8,borderRadius:'50%',background:'#8B5CF6'}}/>
-        <span style={{fontSize:12,fontWeight:600,color:'#F8FAFC'}}>Living Brain</span>
+          style={{width:8,height:8,borderRadius:'50%',background:'#8B5CF6'}} aria-hidden="true"/>
+        <h2 style={{fontSize:12,fontWeight:600,color:'#F8FAFC',margin:0}}>Living Brain</h2>
         <motion.span style={{fontSize:9,fontWeight:700,background:'#10B981',color:'#fff',padding:'1px 6px',borderRadius:999,marginLeft:'auto'}}
           animate={{opacity:[1,.7,1]}} transition={{duration:2,repeat:Infinity}}>ONLINE</motion.span>
-      </div>
+      </header>
 
       {/* content */}
-      <div style={{flex:1,overflow:'auto',padding:'10px 14px',display:'flex',flexDirection:'column',gap:10}}>
+      <div style={{flex:1,overflow:'auto',padding:'10px 14px',display:'flex',flexDirection:'column',gap:10}} role="log" aria-live="polite">
 
         {/* thought */}
         <div style={{background:'rgba(139,92,246,.08)',border:'1px solid rgba(139,92,246,.15)',borderRadius:10,padding:'10px'}}>
@@ -231,7 +234,7 @@ const BrainPanel: React.FC = () => {
         </div>
 
       </div>
-    </div>
+    </section>
   );
 };
 

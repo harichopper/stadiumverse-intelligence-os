@@ -25,7 +25,8 @@ def list_fans(
     active_only: bool = True,
     limit: int = Query(default=50, le=200),
     db: Session = Depends(get_db),
-):
+) -> dict:
+    """Retrieve a list of digital fan twins."""
     q = db.query(DigitalFan)
     if active_only:
         q = q.filter(DigitalFan.is_active == True)
@@ -34,7 +35,8 @@ def list_fans(
 
 
 @router.get("/fans/{fan_id}")
-def get_fan(fan_id: str, db: Session = Depends(get_db)):
+def get_fan(fan_id: str, db: Session = Depends(get_db)) -> dict:
+    """Retrieve details for a specific fan twin."""
     fan = db.query(DigitalFan).filter(
         (DigitalFan.id == fan_id) | (DigitalFan.fan_id == fan_id)
     ).first()
@@ -44,7 +46,8 @@ def get_fan(fan_id: str, db: Session = Depends(get_db)):
 
 
 @router.patch("/fans/{fan_id}/stress")
-def update_fan_stress(fan_id: str, stress: int, db: Session = Depends(get_db)):
+def update_fan_stress(fan_id: str, stress: int, db: Session = Depends(get_db)) -> dict:
+    """Update the stress level of a specific fan twin."""
     fan = db.query(DigitalFan).filter(DigitalFan.fan_id == fan_id).first()
     if not fan:
         raise HTTPException(status_code=404, detail="Fan not found")
@@ -58,7 +61,8 @@ def update_fan_stress(fan_id: str, stress: int, db: Session = Depends(get_db)):
 def list_volunteers(
     available_only: bool = False,
     db: Session = Depends(get_db),
-):
+) -> dict:
+    """List all stadium volunteers."""
     q = db.query(Volunteer).filter(Volunteer.is_active == True)
     if available_only:
         q = q.filter(Volunteer.availability == "available")
@@ -89,7 +93,8 @@ def deploy_volunteer(volunteer_id: str, zone: str, db: Session = Depends(get_db)
 
 # ── Crowd analytics ───────────────────────────────────────────────────────────
 @router.get("/crowd/current")
-def current_crowd(db: Session = Depends(get_db)):
+def current_crowd(db: Session = Depends(get_db)) -> dict:
+    """Get the most recent crowd snapshot."""
     snap = db.query(CrowdSnapshot).order_by(desc(CrowdSnapshot.timestamp)).first()
     if not snap:
         return {"message": "No snapshot yet"}
@@ -100,7 +105,8 @@ def current_crowd(db: Session = Depends(get_db)):
 def crowd_history(
     minutes: int = Query(default=90, le=180),
     db: Session = Depends(get_db),
-):
+) -> dict:
+    """Retrieve historical crowd snapshots."""
     since = datetime.utcnow() - timedelta(minutes=minutes)
     snaps = (
         db.query(CrowdSnapshot)
@@ -140,7 +146,8 @@ def create_snapshot(db: Session = Depends(get_db)):
 def list_decisions(
     limit: int = Query(default=20, le=100),
     db: Session = Depends(get_db),
-):
+) -> dict:
+    """List recent AI decisions."""
     decisions = (
         db.query(AIDecision)
         .order_by(desc(AIDecision.timestamp))
@@ -190,7 +197,8 @@ def update_outcome(decision_id: str, outcome: str, impact_pct: float = 0.0, db: 
 def list_events(
     limit: int = Query(default=30, le=100),
     db: Session = Depends(get_db),
-):
+) -> dict:
+    """List recent stadium events."""
     events = (
         db.query(StadiumEvent)
         .order_by(desc(StadiumEvent.timestamp))

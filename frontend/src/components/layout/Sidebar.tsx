@@ -20,18 +20,19 @@ export const Sidebar: React.FC = () => {
   const [hovered, setHovered] = useState<Page | null>(null);
 
   return (
-    <div style={{
+    <nav style={{
       width: 60, flexShrink: 0,
       background: 'rgba(5,8,22,.95)',
       borderRight: '1px solid rgba(255,255,255,.06)',
       display: 'flex', flexDirection: 'column', alignItems: 'center',
       padding: '10px 0', gap: 2, position: 'relative', zIndex: 20,
-    }}>
+    }} aria-label="Main navigation">
       {/* top pulse */}
       <motion.div
         style={{ width: 8, height: 8, borderRadius: '50%', background: '#3B82F6', marginBottom: 8, flexShrink: 0 }}
         animate={{ boxShadow: ['0 0 4px #3B82F6', '0 0 14px #3B82F6', '0 0 4px #3B82F6'] }}
         transition={{ duration: 2.5, repeat: Infinity }}
+        role="presentation"
       />
 
       {NAV.map(item => {
@@ -45,12 +46,29 @@ export const Sidebar: React.FC = () => {
               onClick={() => setCurrentPage(item.id)}
               whileHover={{ scale: 1.12 }}
               whileTap={{ scale: 0.94 }}
+              aria-label={`Go to ${item.label} page`}
+              aria-current={active ? 'page' : 'false'}
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setCurrentPage(item.id);
+                }
+              }}
               style={{
                 width: 38, height: 38, borderRadius: 10, border: 'none', cursor: 'pointer',
                 background: active ? `${item.color}20` : 'transparent',
-                outline: active ? `1px solid ${item.color}40` : '1px solid transparent',
+                outline: 'none',
+                boxShadow: active ? `0 0 0 2px ${item.color}40` : 'none',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontSize: 16, position: 'relative',
+                transition: 'box-shadow 0.2s ease',
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.boxShadow = `0 0 0 2px ${item.color}80`;
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.boxShadow = active ? `0 0 0 2px ${item.color}40` : 'none';
               }}
             >
               {/* active left bar */}
@@ -67,7 +85,7 @@ export const Sidebar: React.FC = () => {
                   position: 'absolute', top: -2, right: -2,
                   fontSize: 7, fontWeight: 700, padding: '1px 3px', borderRadius: 999,
                   background: item.badge === 'LIVE' ? '#10B981' : '#EF4444', color: 'white',
-                }}>{item.badge}</span>
+                }} aria-label={`${item.badge} badge`}>{item.badge}</span>
               )}
             </motion.button>
 
@@ -85,6 +103,7 @@ export const Sidebar: React.FC = () => {
                     boxShadow: '0 8px 24px rgba(0,0,0,.5)',
                     pointerEvents: 'none',
                   }}
+                  role="tooltip"
                 >
                   {item.label}
                   {item.badge && (
@@ -102,8 +121,11 @@ export const Sidebar: React.FC = () => {
       {/* bottom online dot */}
       <div style={{ marginTop: 'auto' }}>
         <motion.div style={{ width: 6, height: 6, borderRadius: '50%', background: '#10B981' }}
-          animate={{ opacity: [1, 0.4, 1] }} transition={{ duration: 2, repeat: Infinity }} />
+          animate={{ opacity: [1, 0.4, 1] }} transition={{ duration: 2, repeat: Infinity }} 
+          role="presentation"
+          aria-hidden="true"
+        />
       </div>
-    </div>
+    </nav>
   );
 };

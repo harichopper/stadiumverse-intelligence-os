@@ -29,7 +29,7 @@ The system monitors 87,000+ fans simultaneously, runs 13 specialized AI agents i
 | 🧠 **Living Brain** | Streams real-time AI thoughts, predictions, confidence and recommendations |
 | 👥 **Digital Twins** | Every fan has a persistent memory, emotion state, stress level and behavioral prediction |
 | 🏟️ **Living Stadium** | SVG stadium with 150+ animated entities (fans, volunteers, medical, security) |
-| �️ **AI Debate Chamber** | 4 specialized agents (Navigation, Medical, Security, Transport) debate before every decision |
+| 🗣️ **AI Debate Chamber** | 4 specialized agents (Navigation, Medical, Security, Transport) debate before every decision |
 | 🔮 **Future Branches** | Best / Likely / Worst scenario tree with probability propagation |
 | 📊 **Analytics** | ECharts-powered crowd flow, gate density, emotion trends from real SQLite data |
 | ⚡ **Command Bar** | Ctrl+K AI command interface — natural language stadium control |

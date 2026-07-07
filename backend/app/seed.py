@@ -3,6 +3,7 @@ StadiumVerse Intelligence OS — Database Seeder
 Populates SQLite with realistic demo data
 """
 
+import math
 import random
 from datetime import datetime, timedelta
 from .database import SessionLocal
@@ -40,9 +41,9 @@ def seed_fans(db):
     if db.query(DigitalFan).count() > 0:
         return
     for i, (fan_id,name,country,flag,lang,age,team,sector,seat,emotion,stress,excitement,thought,memory,prediction,confidence) in enumerate(FANS_DATA):
-        angle = (i / len(FANS_DATA)) * 3.14159 * 2
-        lx = 50 + 35 * (0.6 + random.random() * 0.4) * round(__import__('math').cos(angle), 3)
-        ly = 50 + 25 * (0.6 + random.random() * 0.4) * round(__import__('math').sin(angle), 3)
+        angle = (i / len(FANS_DATA)) * math.pi * 2
+        lx = 50 + 35 * (0.6 + random.random() * 0.4) * round(math.cos(angle), 3)
+        ly = 50 + 25 * (0.6 + random.random() * 0.4) * round(math.sin(angle), 3)
         db.add(DigitalFan(
             fan_id=fan_id, name=name, country=country, flag=flag,
             language=lang, age=age, favorite_team=team,
@@ -88,7 +89,7 @@ def seed_crowd_snapshots(db):
     now = datetime.utcnow()
     for i in range(90):  # 90 match minutes
         ts = now - timedelta(minutes=90-i)
-        total = int(40000 + 47342 * (1 - __import__('math').exp(-i/15)) + random.randint(-500,500))
+        total = int(40000 + 47342 * (1 - math.exp(-i/15)) + random.randint(-500,500))
         db.add(CrowdSnapshot(
             timestamp=ts,
             total_fans=total,

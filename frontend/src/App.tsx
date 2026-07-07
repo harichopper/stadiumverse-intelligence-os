@@ -236,10 +236,34 @@ const Shell: React.FC = () => {
   useDashboardData();
   return (
     <div style={{position:'fixed',inset:0,zIndex:10,display:'flex',flexDirection:'column',overflow:'hidden'}}>
+      {/* Skip-to-content link */}
+      <a
+        href="#main-content"
+        style={{
+          position: 'absolute',
+          top: -40,
+          left: 0,
+          background: '#3B82F6',
+          color: 'white',
+          padding: '8px 16px',
+          zIndex: 9999,
+          transition: 'top 0.3s',
+        }}
+        onFocus={(e) => {
+          e.currentTarget.style.top = '0';
+        }}
+        onBlur={(e) => {
+          e.currentTarget.style.top = '-40px';
+        }}
+      >
+        Skip to main content
+      </a>
       <TopBar />
       <div style={{flex:1,display:'flex',overflow:'hidden',minHeight:0}}>
         <Sidebar />
-        <PageRenderer />
+        <main id="main-content" style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+          <PageRenderer />
+        </main>
       </div>
       <Timeline />
       <CommandBar />

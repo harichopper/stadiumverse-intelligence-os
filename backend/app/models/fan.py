@@ -17,6 +17,7 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import UUID, JSONB, ENUM
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
+# pyrefly: ignore [missing-import]
 from geoalchemy2 import Geometry
 import uuid
 import enum

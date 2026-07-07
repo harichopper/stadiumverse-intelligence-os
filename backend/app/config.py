@@ -39,7 +39,9 @@ class Settings:
     DEBUG = os.getenv("DEBUG", "true").lower() == "true"
     HOST = os.getenv("HOST", "0.0.0.0")
     PORT = int(os.getenv("PORT", "8000"))
-
+    STADIUM_COORDINATES = [40.7128, -74.0060]
+    AI_UPDATE_INTERVAL = 5.0
 
 # Global settings instance
 settings = Settings()
+STADIUM_ZONES = {}

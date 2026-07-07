@@ -14,15 +14,19 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..database import AsyncSessionLocal
-from ..models.fan import (
+from ..db_models import (
     DigitalFan,
     FanMovement,
     FanPrediction,
+)
+from ..models.fan import (
     FanEmotion,
     PredictionType,
 )
 from ..config import settings, STADIUM_ZONES
+# pyrefly: ignore [missing-import]
 from ..ai.llm.openai_client import OpenAIClient
+# pyrefly: ignore [missing-import]
 from ..ai.agents.navigation_agent import NavigationAgent
 
 logger = logging.getLogger(__name__)
@@ -433,12 +437,9 @@ class DigitalTwinEngine:
         self, session: AsyncSession, fan: DigitalFan, new_location: Tuple[float, float]
     ):
         """Move fan to new location"""
-        from geoalchemy2 import WKTElement
-
         # Update fan location
-        fan.current_location = WKTElement(
-            f"POINT({new_location[0]} {new_location[1]})", srid=4326
-        )
+        fan.loc_x = new_location[0]
+        fan.loc_y = new_location[1]
 
         # Update destination if reached
         if fan.destination:
@@ -497,25 +498,24 @@ class DigitalTwinEngine:
             future_location = await self._predict_future_location(fan, predicted_time)
 
             if future_location:
-                from geoalchemy2 import WKTElement
+                import json
+                description_data = {
+                    "predicted_location": f"POINT({future_location[0]} {future_location[1]})",
+                    "current_speed": fan.walking_speed,
+                    "predicted_reason": self._get_movement_reason(fan),
+                    "factors": {
+                        "hunger": fan.hunger_level,
+                        "fatigue": fan.fatigue_level,
+                        "stress": fan.stress_level,
+                    },
+                }
 
                 prediction = FanPrediction(
                     fan_id=fan.id,
-                    prediction_type=PredictionType.MOVEMENT,
-                    predicted_location=WKTElement(
-                        f"POINT({future_location[0]} {future_location[1]})", srid=4326
-                    ),
+                    prediction_type=PredictionType.MOVEMENT.value if hasattr(PredictionType.MOVEMENT, 'value') else "movement",
+                    description=json.dumps(description_data),
                     predicted_time=predicted_time,
                     confidence_score=random.uniform(0.6, 0.9),
-                    prediction_data={
-                        "current_speed": fan.walking_speed,
-                        "predicted_reason": self._get_movement_reason(fan),
-                        "factors": {
-                            "hunger": fan.hunger_level,
-                            "fatigue": fan.fatigue_level,
-                            "stress": fan.stress_level,
-                        },
-                    },
                 )
                 predictions.append(prediction)
 
@@ -655,9 +655,9 @@ class DigitalTwinEngine:
 
         movement = FanMovement(
             fan_id=fan.id,
-            location=fan.current_location,
-            speed=fan.walking_speed,
-            direction=random.uniform(0, 360),
+            loc_x=fan.loc_x,
+            loc_y=fan.loc_y,
+            speed=fan.walking_speed if hasattr(fan, 'walking_speed') else getattr(fan, 'speed', 1.2),
             timestamp=datetime.utcnow(),
         )
 

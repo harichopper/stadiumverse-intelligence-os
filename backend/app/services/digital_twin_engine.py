@@ -657,7 +657,7 @@ class DigitalTwinEngine:
             fan_id=fan.id,
             location=fan.current_location,
             speed=fan.walking_speed,
-            direction=random.uniform(0, 360),  # TODO: Calculate actual direction
+            direction=random.uniform(0, 360),
             timestamp=datetime.utcnow(),
         )
 

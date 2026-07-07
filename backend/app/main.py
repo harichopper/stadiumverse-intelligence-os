@@ -35,8 +35,8 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="StadiumVerse Intelligence OS",
-    description="AI Operating System for FIFA World Cup stadium management",
+    title="StadiumVerse Intelligence OS - FIFA World Cup 2026",
+    description="AI Operating System for Smart Stadiums & Tournament Operations",
     version="2.0.0",
     lifespan=lifespan,
 )

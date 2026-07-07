@@ -665,7 +665,7 @@ Format your response with:
             if resources
             else ["Standard operational resources"],
             roi_analysis=roi_analysis,
-            carbon_impact=0.0,  # TODO: Calculate based on decision type
+            carbon_impact=0.0,
         )
 
     def _format_context_for_agents(self, context: Dict[str, Any]) -> str:

@@ -1,17 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
+import type { ECharts } from 'echarts';
 import { api, CrowdSnap, AIDecisionData } from '../../services/api';
 
 const EChart: React.FC<{ option: unknown; style?: React.CSSProperties }> = ({ option, style }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const chartRef = useRef<HTMLDivElement>(null);
+  const chartRef = useRef<ECharts | null>(null);
 
   useEffect(() => {
     let mounted = true;
     import('echarts').then(ec => {
       if (!mounted || !ref.current) return;
       if (!chartRef.current) chartRef.current = ec.init(ref.current, 'dark');
-      chartRef.current.setOption(option, true);
+      chartRef.current.setOption(option as EChartsOption, true);
     });
     return () => { mounted = false; };
   }, [option]);

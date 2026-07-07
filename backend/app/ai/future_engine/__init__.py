@@ -9,8 +9,8 @@ from .scenario_models import FutureBranch, ScenarioOutcome, TimelinePoint
 
 __all__ = [
     "FuturePredictor",
-    "BranchCalculator", 
+    "BranchCalculator",
     "FutureBranch",
     "ScenarioOutcome",
-    "TimelinePoint"
+    "TimelinePoint",
 ]

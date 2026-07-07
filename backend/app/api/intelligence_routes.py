@@ -4,7 +4,7 @@ API endpoints for the Collective Intelligence Engine
 """
 
 from fastapi import APIRouter, HTTPException, Query, Body
-from typing import Dict, List, Any, Optional
+from typing import Dict, Any
 from datetime import datetime
 import logging
 
@@ -91,12 +91,10 @@ async def analyze_situation_and_propose_interventions(
                 "highest_priority": max((p.get_priority_score() for p in proposals), default=0),
                 "total_fans_affected": sum(p.get_total_fans_affected() for p in proposals),
                 "estimated_total_cost": sum(
-                    p.roi_analysis.total_cost for p in proposals 
-                    if p.roi_analysis else 0
+                    p.roi_analysis.total_cost if p.roi_analysis else 0 for p in proposals 
                 ),
                 "estimated_total_benefit": sum(
-                    p.roi_analysis.total_benefit for p in proposals 
-                    if p.roi_analysis else 0
+                    p.roi_analysis.total_benefit if p.roi_analysis else 0 for p in proposals 
                 )
             },
             "performance_metrics": performance_metrics

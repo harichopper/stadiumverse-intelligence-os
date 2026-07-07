@@ -5,9 +5,16 @@ All tables in one file, SQLite-compatible (no PostGIS / UUID columns).
 
 import uuid
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict
 from sqlalchemy import (
-    Column, String, Integer, Float, Boolean, DateTime, Text, ForeignKey
+    Column,
+    String,
+    Integer,
+    Float,
+    Boolean,
+    DateTime,
+    Text,
+    ForeignKey,
 )
 from sqlalchemy.orm import relationship
 from .database import Base
@@ -24,6 +31,7 @@ class DigitalFan(Base):
     Digital twin of a stadium fan, tracking personal details, live state,
     and AI predictions for behavior and risk.
     """
+
     __tablename__ = "digital_fans"
 
     id = Column(String(36), primary_key=True, default=_uid)
@@ -60,22 +68,33 @@ class DigitalFan(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    movements = relationship("FanMovement", back_populates="fan", cascade="all, delete-orphan")
-    predictions = relationship("FanPrediction", back_populates="fan", cascade="all, delete-orphan")
+    movements = relationship(
+        "FanMovement", back_populates="fan", cascade="all, delete-orphan"
+    )
+    predictions = relationship(
+        "FanPrediction", back_populates="fan", cascade="all, delete-orphan"
+    )
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert model to a serializable dictionary for API responses."""
         return {
-            "id": self.id, "fan_id": self.fan_id, "name": self.name,
-            "country": self.country, "flag": self.flag, "language": self.language,
-            "age": self.age, "favorite_team": self.favorite_team,
-            "sector": self.sector, "seat": self.seat,
+            "id": self.id,
+            "fan_id": self.fan_id,
+            "name": self.name,
+            "country": self.country,
+            "flag": self.flag,
+            "language": self.language,
+            "age": self.age,
+            "favorite_team": self.favorite_team,
+            "sector": self.sector,
+            "seat": self.seat,
             "current_emotion": self.current_emotion,
             "stress_level": self.stress_level,
             "excitement_level": self.excitement_level,
             "hunger_level": self.hunger_level,
             "fatigue_level": self.fatigue_level,
-            "loc_x": self.loc_x, "loc_y": self.loc_y,
+            "loc_x": self.loc_x,
+            "loc_y": self.loc_y,
             "current_thought": self.current_thought,
             "memory_summary": self.memory_summary,
             "predicted_action": self.predicted_action,
@@ -90,6 +109,7 @@ class FanMovement(Base):
     """
     Historical movement record for a digital fan twin.
     """
+
     __tablename__ = "fan_movements"
 
     id = Column(String(36), primary_key=True, default=_uid)
@@ -106,6 +126,7 @@ class FanPrediction(Base):
     """
     AI-generated prediction for a digital fan's future behavior.
     """
+
     __tablename__ = "fan_predictions"
 
     id = Column(String(36), primary_key=True, default=_uid)
@@ -124,6 +145,7 @@ class Volunteer(Base):
     """
     Stadium volunteer profile, tracking skills, availability, and assignments.
     """
+
     __tablename__ = "volunteers"
 
     id = Column(String(36), primary_key=True, default=_uid)
@@ -140,18 +162,23 @@ class Volunteer(Base):
     is_active = Column(Boolean, default=True)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    tasks = relationship("VolunteerTask", back_populates="volunteer", cascade="all, delete-orphan")
+    tasks = relationship(
+        "VolunteerTask", back_populates="volunteer", cascade="all, delete-orphan"
+    )
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert model to a serializable dictionary for API responses."""
         return {
-            "id": self.id, "volunteer_id": self.volunteer_id, "name": self.name,
+            "id": self.id,
+            "volunteer_id": self.volunteer_id,
+            "name": self.name,
             "languages": self.languages.split(",") if self.languages else [],
             "skills": self.skills.split(",") if self.skills else [],
             "medical_training": self.medical_training,
             "availability": self.availability,
             "zone_assignment": self.zone_assignment,
-            "loc_x": self.loc_x, "loc_y": self.loc_y,
+            "loc_x": self.loc_x,
+            "loc_y": self.loc_y,
             "tasks_today": self.tasks_today,
             "is_active": self.is_active,
         }
@@ -161,6 +188,7 @@ class VolunteerTask(Base):
     """
     Task assigned to a volunteer (manual or AI-generated).
     """
+
     __tablename__ = "volunteer_tasks"
 
     id = Column(String(36), primary_key=True, default=_uid)
@@ -179,9 +207,12 @@ class VolunteerTask(Base):
     def to_dict(self) -> Dict[str, Any]:
         """Convert model to a serializable dictionary for API responses."""
         return {
-            "id": self.id, "volunteer_id": self.volunteer_id,
-            "task_type": self.task_type, "title": self.title,
-            "description": self.description, "priority": self.priority,
+            "id": self.id,
+            "volunteer_id": self.volunteer_id,
+            "task_type": self.task_type,
+            "title": self.title,
+            "description": self.description,
+            "priority": self.priority,
             "status": self.status,
             "assigned_at": self.assigned_at.isoformat() if self.assigned_at else None,
             "assigned_by_ai": self.assigned_by_ai,
@@ -193,6 +224,7 @@ class CrowdSnapshot(Base):
     """
     Point-in-time snapshot of overall crowd state and analytics.
     """
+
     __tablename__ = "crowd_snapshots"
 
     id = Column(String(36), primary_key=True, default=_uid)
@@ -219,8 +251,10 @@ class CrowdSnapshot(Base):
             "avg_excitement": self.avg_excitement,
             "risk_level": self.risk_level,
             "gate_densities": {
-                "A": self.gate_a_density, "B": self.gate_b_density,
-                "C": self.gate_c_density, "D": self.gate_d_density,
+                "A": self.gate_a_density,
+                "B": self.gate_b_density,
+                "C": self.gate_c_density,
+                "D": self.gate_d_density,
             },
             "queue_avg_min": self.queue_avg_min,
             "weather": {"temp": self.weather_temp, "rain_pct": self.weather_rain_pct},
@@ -232,6 +266,7 @@ class AIDecision(Base):
     """
     Record of all AI decisions made, with reasoning, confidence, and outcomes.
     """
+
     __tablename__ = "ai_decisions"
 
     id = Column(String(36), primary_key=True, default=_uid)
@@ -266,6 +301,7 @@ class StadiumEvent(Base):
     """
     Record of significant events happening in or around the stadium.
     """
+
     __tablename__ = "stadium_events"
 
     id = Column(String(36), primary_key=True, default=_uid)

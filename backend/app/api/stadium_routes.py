@@ -5,15 +5,18 @@ All REST endpoints consumed by the frontend.
 
 import random
 from datetime import datetime, timedelta
-from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
 
 from ..database import get_db
 from ..db_models import (
-    DigitalFan, Volunteer, VolunteerTask,
-    CrowdSnapshot, AIDecision, StadiumEvent
+    DigitalFan,
+    Volunteer,
+    VolunteerTask,
+    CrowdSnapshot,
+    AIDecision,
+    StadiumEvent,
 )
 
 router = APIRouter(prefix="/api/stadium", tags=["stadium"])
@@ -29,7 +32,7 @@ def list_fans(
     """Retrieve a list of digital fan twins."""
     q = db.query(DigitalFan)
     if active_only:
-        q = q.filter(DigitalFan.is_active == True)
+        q = q.filter(DigitalFan.is_active)
     fans = q.limit(limit).all()
     return {"fans": [f.to_dict() for f in fans], "total": q.count()}
 
@@ -37,9 +40,11 @@ def list_fans(
 @router.get("/fans/{fan_id}")
 def get_fan(fan_id: str, db: Session = Depends(get_db)) -> dict:
     """Retrieve details for a specific fan twin."""
-    fan = db.query(DigitalFan).filter(
-        (DigitalFan.id == fan_id) | (DigitalFan.fan_id == fan_id)
-    ).first()
+    fan = (
+        db.query(DigitalFan)
+        .filter((DigitalFan.id == fan_id) | (DigitalFan.fan_id == fan_id))
+        .first()
+    )
     if not fan:
         raise HTTPException(status_code=404, detail="Fan not found")
     return fan.to_dict()
@@ -63,7 +68,7 @@ def list_volunteers(
     db: Session = Depends(get_db),
 ) -> dict:
     """List all stadium volunteers."""
-    q = db.query(Volunteer).filter(Volunteer.is_active == True)
+    q = db.query(Volunteer).filter(Volunteer.is_active)
     if available_only:
         q = q.filter(Volunteer.availability == "available")
     vols = q.all()
@@ -128,13 +133,23 @@ def create_snapshot(db: Session = Depends(get_db)):
         avg_stress=last.avg_stress + random.uniform(-2, 2) if last else 50,
         avg_excitement=last.avg_excitement + random.uniform(-2, 2) if last else 60,
         risk_level=last.risk_level if last else "healthy",
-        gate_a_density=min(99, (last.gate_a_density if last else 65) + random.uniform(-3, 3)),
-        gate_b_density=min(99, (last.gate_b_density if last else 87) + random.uniform(-2, 4)),
-        gate_c_density=min(99, (last.gate_c_density if last else 70) + random.uniform(-3, 3)),
-        gate_d_density=min(99, (last.gate_d_density if last else 60) + random.uniform(-3, 3)),
+        gate_a_density=min(
+            99, (last.gate_a_density if last else 65) + random.uniform(-3, 3)
+        ),
+        gate_b_density=min(
+            99, (last.gate_b_density if last else 87) + random.uniform(-2, 4)
+        ),
+        gate_c_density=min(
+            99, (last.gate_c_density if last else 70) + random.uniform(-3, 3)
+        ),
+        gate_d_density=min(
+            99, (last.gate_d_density if last else 60) + random.uniform(-3, 3)
+        ),
         queue_avg_min=(last.queue_avg_min if last else 5) + random.uniform(-0.5, 0.5),
         weather_temp=(last.weather_temp if last else 22) + random.uniform(-0.1, 0.1),
-        weather_rain_pct=min(100, max(0, (last.weather_rain_pct if last else 18) + random.uniform(-1, 1))),
+        weather_rain_pct=min(
+            100, max(0, (last.weather_rain_pct if last else 18) + random.uniform(-1, 1))
+        ),
     )
     db.add(snap)
     db.commit()
@@ -149,10 +164,7 @@ def list_decisions(
 ) -> dict:
     """List recent AI decisions."""
     decisions = (
-        db.query(AIDecision)
-        .order_by(desc(AIDecision.timestamp))
-        .limit(limit)
-        .all()
+        db.query(AIDecision).order_by(desc(AIDecision.timestamp)).limit(limit).all()
     )
     return {"decisions": [d.to_dict() for d in decisions]}
 
@@ -182,7 +194,12 @@ def record_decision(
 
 
 @router.patch("/decisions/{decision_id}/outcome")
-def update_outcome(decision_id: str, outcome: str, impact_pct: float = 0.0, db: Session = Depends(get_db)):
+def update_outcome(
+    decision_id: str,
+    outcome: str,
+    impact_pct: float = 0.0,
+    db: Session = Depends(get_db),
+):
     d = db.query(AIDecision).filter(AIDecision.id == decision_id).first()
     if not d:
         raise HTTPException(status_code=404, detail="Decision not found")
@@ -200,10 +217,7 @@ def list_events(
 ) -> dict:
     """List recent stadium events."""
     events = (
-        db.query(StadiumEvent)
-        .order_by(desc(StadiumEvent.timestamp))
-        .limit(limit)
-        .all()
+        db.query(StadiumEvent).order_by(desc(StadiumEvent.timestamp)).limit(limit).all()
     )
     return {"events": [e.to_dict() for e in events]}
 
@@ -213,10 +227,18 @@ def list_events(
 def dashboard_summary(db: Session = Depends(get_db)):
     """Single endpoint the frontend polls for the full dashboard state."""
     snap = db.query(CrowdSnapshot).order_by(desc(CrowdSnapshot.timestamp)).first()
-    fan_count = db.query(DigitalFan).filter(DigitalFan.is_active == True).count()
-    vol_available = db.query(Volunteer).filter(Volunteer.availability == "available", Volunteer.is_active == True).count()
-    recent_decisions = db.query(AIDecision).order_by(desc(AIDecision.timestamp)).limit(5).all()
-    recent_events = db.query(StadiumEvent).order_by(desc(StadiumEvent.timestamp)).limit(5).all()
+    fan_count = db.query(DigitalFan).filter(DigitalFan.is_active).count()
+    vol_available = (
+        db.query(Volunteer)
+        .filter(Volunteer.availability == "available", Volunteer.is_active)
+        .count()
+    )
+    recent_decisions = (
+        db.query(AIDecision).order_by(desc(AIDecision.timestamp)).limit(5).all()
+    )
+    recent_events = (
+        db.query(StadiumEvent).order_by(desc(StadiumEvent.timestamp)).limit(5).all()
+    )
 
     return {
         "crowd": snap.to_dict() if snap else {},

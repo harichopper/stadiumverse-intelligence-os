@@ -5,7 +5,8 @@ SQLite with SQLAlchemy (no external deps needed)
 
 import os
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.orm import sessionmaker, declarative_base, Session
+from typing import Generator
 
 DB_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "stadiumverse.db")
 DATABASE_URL = f"sqlite:///{DB_PATH}"
@@ -20,8 +21,7 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 
-from typing import Generator
-from sqlalchemy.orm import Session
+
 
 def get_db() -> Generator[Session, None, None]:
     """Provide a transactional scope around a series of operations."""
@@ -35,5 +35,6 @@ def get_db() -> Generator[Session, None, None]:
 def init_db() -> None:
     """Initialize the SQLite database and create all tables."""
     from . import db_models  # noqa — registers all models
+
     Base.metadata.create_all(bind=engine)
     print(f"✅ SQLite DB initialised: {DB_PATH}")

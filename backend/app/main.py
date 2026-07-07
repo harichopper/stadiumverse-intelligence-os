@@ -24,6 +24,7 @@ async def lifespan(app: FastAPI):
         try:
             from .database import init_db
             from .seed import run_seed
+
             init_db()
             run_seed()
             logger.info("✅ DB ready")
@@ -43,8 +44,10 @@ app = FastAPI(
 # CORS Configuration
 ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "").split(",")
 ALLOWED_ORIGINS += [
-    "http://localhost:3000", "http://localhost:3001",
-    "http://127.0.0.1:3000", "http://127.0.0.1:3001",
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:3001",
     "http://localhost:5173",
 ]
 ALLOWED_ORIGINS = [origin.strip() for origin in ALLOWED_ORIGINS if origin.strip()]
@@ -58,6 +61,7 @@ app.add_middleware(
 )
 
 from .api.stadium_routes import router as stadium_router  # noqa: E402
+
 app.include_router(stadium_router)
 
 

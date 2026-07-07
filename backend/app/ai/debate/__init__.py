@@ -9,8 +9,8 @@ from .debate_chamber import DebateChamber
 
 __all__ = [
     "DebateCoordinator",
-    "DebateSession", 
+    "DebateSession",
     "AgentPosition",
     "DebateDecision",
-    "DebateChamber"
+    "DebateChamber",
 ]

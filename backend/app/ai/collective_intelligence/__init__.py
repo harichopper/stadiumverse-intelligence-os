@@ -10,7 +10,7 @@ from .impact_models import InterventionProposal, ImpactAssessment, ROIAnalysis
 __all__ = [
     "CollectiveIntelligenceEngine",
     "InterventionCalculator",
-    "InterventionProposal", 
+    "InterventionProposal",
     "ImpactAssessment",
-    "ROIAnalysis"
+    "ROIAnalysis",
 ]

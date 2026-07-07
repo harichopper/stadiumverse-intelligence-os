@@ -55,6 +55,7 @@ const ReasoningChain: React.FC = () => {
 };
 
 const NeuralVisualization: React.FC = () => {
+  const [pulses, setPulses] = useState<number[]>([]);
 
   useEffect(() => {
     const interval = setInterval(() => {

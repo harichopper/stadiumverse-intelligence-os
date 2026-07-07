@@ -3,11 +3,11 @@ StadiumVerse AI V2 - Base AI Provider Interface
 Abstract interface for all AI providers supporting the Living Brain architecture
 """
 
+import time
 from abc import ABC, abstractmethod
-from typing import List, Dict, Any, Optional, AsyncGenerator
 from dataclasses import dataclass
 from enum import Enum
-import time
+from typing import Any, AsyncGenerator, Dict, List, Optional
 
 
 class MessageRole(str, Enum):
@@ -240,14 +240,14 @@ class AIProvider(ABC):
         Topic: {debate_context.get("topic", "Unknown")}
         Current Situation: {debate_context.get("situation", "Unknown")}
         Other Agents' Positions: {debate_context.get("other_positions", [])}
-        
+
         Provide your position with:
         1. Clear reasoning
         2. Confidence level (0-100%)
         3. Risk assessment
         4. Alternative actions
         5. Estimated cost/impact
-        
+
         Be specific and actionable.
         """
 
@@ -275,17 +275,17 @@ class AIProvider(ABC):
         """
         storyteller_prompt = f"""
         You are the AI Storyteller for StadiumVerse. Transform technical data into engaging narratives.
-        
+
         Style: {style}
         Scenario: {scenario}
-        
+
         Create a natural language explanation that:
         1. Explains what is happening
         2. Describes the impact
         3. Provides clear recommendations
         4. Uses specific numbers and timeframes
         5. Maintains professional but engaging tone
-        
+
         Example format: "Within eight minutes approximately 3,200 supporters are expected to move toward Exit B after the final whistle. If no action is taken, average exit time increases to twenty-two minutes. Opening Exit D now will reduce congestion by forty percent."
         """
 

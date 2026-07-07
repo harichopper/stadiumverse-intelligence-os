@@ -4,7 +4,8 @@ Factory pattern for creating AI providers based on configuration
 """
 
 import logging
-from typing import Dict, Any
+from typing import Any, Dict
+
 from ...config import settings
 from .base import AIProvider
 from .ollama_provider import OllamaProvider

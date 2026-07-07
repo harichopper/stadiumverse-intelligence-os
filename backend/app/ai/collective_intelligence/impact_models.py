@@ -3,12 +3,12 @@ StadiumVerse AI V2 - Impact Assessment Models
 Data structures for measuring intervention impacts and ROI
 """
 
+import math
+import uuid
 from dataclasses import dataclass, field
-from typing import Dict, List, Any, Optional
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
-import math
+from typing import Any, Dict, List, Optional
 
 
 class InterventionType(str, Enum):

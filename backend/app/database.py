@@ -4,9 +4,10 @@ SQLite with SQLAlchemy (no external deps needed)
 """
 
 import os
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base, Session
 from typing import Generator
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session, declarative_base, sessionmaker
 
 DB_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "stadiumverse.db")
 DATABASE_URL = f"sqlite:///{DB_PATH}"
@@ -36,3 +37,8 @@ def init_db() -> None:
 
     Base.metadata.create_all(bind=engine)
     print(f"✅ SQLite DB initialised: {DB_PATH}")
+
+
+# Async session stub — used by legacy AI agent modules (not active in SQLite mode)
+AsyncSessionLocal = SessionLocal
+

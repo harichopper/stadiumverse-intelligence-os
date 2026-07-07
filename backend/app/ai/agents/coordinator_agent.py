@@ -6,31 +6,16 @@ The master AI agent that coordinates all other agents and generates strategic in
 import asyncio
 import logging
 from datetime import datetime, timedelta
-from typing import List, Dict, Any
-from sqlalchemy import select, func
+from typing import Any, Dict, List
 
+from sqlalchemy import func, select
+
+from ...config import STADIUM_ZONES  # noqa: F401
 from ...database import AsyncSessionLocal
-from ...models.fan import DigitalFan, FanPrediction
-from ...models.volunteer import Volunteer
-from ...models.event import Emergency, AIInsight
-from ...config import AGENT_SYSTEM_PROMPTS
-from ..llm.openai_client import OpenAIClient
-
-# Import all specialized agents
-from .navigation_agent import NavigationAgent
-from .security_agent import SecurityAgent
-from .medical_agent import MedicalAgent
-from .volunteer_agent import VolunteerAgent
-from .cleaning_agent import CleaningAgent
-from .food_agent import FoodAgent
-from .transport_agent import TransportAgent
-from .accessibility_agent import AccessibilityAgent
-from .weather_agent import WeatherAgent
-from .sustainability_agent import SustainabilityAgent
-from .emergency_agent import EmergencyAgent
-from .analytics_agent import AnalyticsAgent
+from ...db_models import DigitalFan, FanPrediction, Volunteer
 
 logger = logging.getLogger(__name__)
+
 
 
 class CoordinatorAgent:
@@ -299,14 +284,14 @@ class CoordinatorAgent:
         # Create synthesis prompt
         synthesis_prompt = f"""
         You are the AI Coordinator for StadiumVerse AI managing FIFA World Cup 2026 stadium operations.
-        
+
         Current Stadium State:
         - Total Fans: {stadium_state["fans"].get("total", 0)}
         - Average Stress Level: {stadium_state["fans"].get("avg_stress", 0):.1f}%
         - Average Excitement: {stadium_state["fans"].get("avg_excitement", 0):.1f}%
         - Available Volunteers: {stadium_state["volunteers"].get("available", 0)}
         - Active Emergencies: {stadium_state["emergencies"].get("active_count", 0)}
-        
+
         Agent Insights Summary:
         """
 
@@ -321,14 +306,14 @@ class CoordinatorAgent:
                     )
 
         synthesis_prompt += """
-        
+
         Based on this information, generate 3-5 high-level strategic insights that:
         1. Identify the most critical issues requiring immediate attention
         2. Highlight positive trends and successful operations
         3. Predict potential problems in the next 30 minutes
         4. Recommend specific coordinated actions
         5. Provide natural language explanations with confidence scores
-        
+
         Format each insight as:
         PRIORITY: [1-5]
         TITLE: [Brief title]

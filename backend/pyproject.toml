@@ -1,0 +1,13 @@
+[tool.ruff]
+line-length = 99
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]
+
+# Exclude legacy AI agent files that reference optional future components
+[tool.ruff.lint.per-file-ignores]
+"app/ai/**" = ["F821", "F401"]
+"app/services/digital_twin_engine.py" = ["F821", "F401"]
+"app/models/**" = ["F821", "F401"]

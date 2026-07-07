@@ -1,32 +1,9 @@
 """
-StadiumVerse AI - Database Models
-SQLAlchemy models for the stadium digital twin system
+StadiumVerse Intelligence OS — Legacy Model Stubs
+These are design-time references kept for documentation only.
+The active SQLite models are in app/db_models.py.
 """
 
-from .fan import DigitalFan, FanMovement, FanPrediction
-from .volunteer import Volunteer, VolunteerTask
-from .stadium import StadiumZone, StadiumFacility, StadiumEvent
-from .event import Emergency, AIInsight, CrowdAnalytics
-from .simulation import SimulationScenario, WeatherData, TransportStatus
-
-__all__ = [
-    # Fan models
-    "DigitalFan",
-    "FanMovement",
-    "FanPrediction",
-    # Volunteer models
-    "Volunteer",
-    "VolunteerTask",
-    # Stadium models
-    "StadiumZone",
-    "StadiumFacility",
-    "StadiumEvent",
-    # Event models
-    "Emergency",
-    "AIInsight",
-    "CrowdAnalytics",
-    # Simulation models
-    "SimulationScenario",
-    "WeatherData",
-    "TransportStatus",
-]
+# The primary ORM models used by the application are in app/db_models.py.
+# This package contains advanced PostgreSQL/PostGIS model designs for
+# future production deployment with a full PostgreSQL database.

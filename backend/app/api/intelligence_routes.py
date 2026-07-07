@@ -3,16 +3,17 @@ StadiumVerse AI V2 - Collective Intelligence API Routes
 API endpoints for the Collective Intelligence Engine
 """
 
-from fastapi import APIRouter, HTTPException, Query, Body
-from typing import Dict, Any
-from datetime import datetime
 import logging
+from datetime import datetime
+from typing import Any, Dict
 
+from fastapi import APIRouter, Body, HTTPException, Query
+
+from ..ai.collective_intelligence.impact_models import ImpactCategory, InterventionType
 from ..ai.collective_intelligence.intelligence_engine import (
     CollectiveIntelligenceEngine,
 )
-from ..ai.collective_intelligence.impact_models import InterventionType, ImpactCategory
-from ..ai.storyteller.storyteller_engine import StorytellerEngine, NarrativeStyle
+from ..ai.storyteller.storyteller_engine import NarrativeStyle, StorytellerEngine
 
 logger = logging.getLogger(__name__)
 

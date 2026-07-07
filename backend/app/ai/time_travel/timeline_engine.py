@@ -4,14 +4,14 @@ Allows exploration of past states and future predictions with timeline slider
 """
 
 import logging
-from typing import Dict, List, Any, Optional
-from datetime import datetime
 from dataclasses import dataclass, field
+from datetime import datetime
 from enum import Enum
+from typing import Any, Dict, List, Optional
 
-from ..providers.factory import get_global_ai_provider
-from ..future_engine.branch_calculator import BranchCalculator
 from ..collective_intelligence.intelligence_engine import CollectiveIntelligenceEngine
+from ..future_engine.branch_calculator import BranchCalculator
+from ..providers.factory import get_global_ai_provider
 
 logger = logging.getLogger(__name__)
 

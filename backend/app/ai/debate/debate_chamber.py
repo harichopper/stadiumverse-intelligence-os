@@ -5,16 +5,16 @@ The core debate orchestration system where AI agents argue and reason
 
 import asyncio
 import logging
-from typing import Dict, List, Any, Optional
+from typing import Any, Dict, List, Optional
 
+from ..providers.factory import get_global_ai_provider
 from .debate_models import (
-    DebateSession,
     AgentPosition,
-    DebateDecision,
     AgentRole,
+    DebateDecision,
+    DebateSession,
     DebateStatus,
 )
-from ..providers.factory import get_global_ai_provider
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +37,7 @@ You are the Navigation Agent in StadiumVerse AI's debate chamber. Your expertise
 
 In debates, provide:
 1. Clear reasoning based on crowd density data
-2. Confidence level (0-100%)  
+2. Confidence level (0-100%)
 3. Risk assessment for movement patterns
 4. Alternative routing options
 5. Estimated impact on fan flow
@@ -52,7 +52,7 @@ You are the Security Agent in StadiumVerse AI's debate chamber. Your expertise i
 In debates, provide:
 1. Security risk analysis with specific threat levels
 2. Confidence in risk assessment (0-100%)
-3. Crowd safety implications 
+3. Crowd safety implications
 4. Alternative security measures
 5. Resource requirements (personnel, equipment)
 6. Timeline for implementation
@@ -60,14 +60,14 @@ In debates, provide:
 Prioritize fan safety while balancing operational efficiency.
 Consider VIP movements, emergency protocols, and crowd psychology.
 """,
-            AgentRole.MEDICAL: """  
+            AgentRole.MEDICAL: """
 You are the Medical Agent in StadiumVerse AI's debate chamber. Your expertise is health monitoring, emergency response, and medical risk assessment.
 
 In debates, provide:
 1. Medical risk analysis based on fan health data
 2. Confidence in medical predictions (0-100%)
 3. Emergency response time implications
-4. Alternative medical deployment strategies  
+4. Alternative medical deployment strategies
 5. Resource needs (staff, equipment, ambulances)
 6. Patient outcome projections
 
@@ -92,7 +92,7 @@ Consider language skills, specialization, and volunteer well-being.
 You are the Food Service Agent in StadiumVerse AI's debate chamber. Your expertise is concession management, demand forecasting, and supply optimization.
 
 In debates, provide:
-1. Demand prediction and supply analysis  
+1. Demand prediction and supply analysis
 2. Confidence in service capacity (0-100%)
 3. Queue management risk assessment
 4. Alternative service strategies
@@ -107,7 +107,7 @@ You are the Transport Agent in StadiumVerse AI's debate chamber. Your expertise 
 
 In debates, provide:
 1. Transportation capacity and timing analysis
-2. Confidence in traffic predictions (0-100%) 
+2. Confidence in traffic predictions (0-100%)
 3. Congestion risk assessment
 4. Alternative transport routing
 5. Infrastructure utilization optimization
@@ -122,7 +122,7 @@ You are the Accessibility Agent in StadiumVerse AI's debate chamber. Your expert
 In debates, provide:
 1. Accessibility impact analysis for all fans
 2. Confidence in accommodation effectiveness (0-100%)
-3. Barrier and compliance risk assessment  
+3. Barrier and compliance risk assessment
 4. Alternative inclusive solutions
 5. Specialized resource requirements
 6. Legal compliance implications
@@ -138,7 +138,7 @@ In debates, provide:
 2. Confidence in weather forecasts (0-100%)
 3. Environmental risk assessment
 4. Alternative weather mitigation strategies
-5. Infrastructure and safety implications  
+5. Infrastructure and safety implications
 6. Fan comfort and safety projections
 
 Consider both immediate and extended weather impacts.
@@ -480,7 +480,7 @@ You are the Coordinator Agent for StadiumVerse AI. Your role is to synthesize al
 
 Based on the agent debate below, provide a final decision that:
 1. Considers all agent perspectives
-2. Balances competing priorities  
+2. Balances competing priorities
 3. Minimizes risk while maximizing benefit
 4. Provides clear implementation steps
 5. Includes fallback plans

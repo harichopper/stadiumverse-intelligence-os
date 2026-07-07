@@ -3,26 +3,27 @@ StadiumVerse AI - Digital Fan Models
 Core models for AI Digital Twins of stadium visitors
 """
 
-from sqlalchemy import (
-    Column,
-    String,
-    Integer,
-    Float,
-    Boolean,
-    DateTime,
-    Text,
-    ForeignKey,
-    ARRAY,
-)
-from sqlalchemy.dialects.postgresql import UUID, JSONB, ENUM
-from sqlalchemy.orm import relationship
-from sqlalchemy.sql import func
+import enum
+import uuid
+from datetime import datetime
+from typing import Any, Dict, List
+
 # pyrefly: ignore [missing-import]
 from geoalchemy2 import Geometry
-import uuid
-import enum
-from datetime import datetime
-from typing import Dict, List, Any
+from sqlalchemy import (
+    ARRAY,
+    Boolean,
+    Column,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+)
+from sqlalchemy.dialects.postgresql import ENUM, JSONB, UUID
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 
 from ..database import Base
 

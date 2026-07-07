@@ -5,18 +5,19 @@ All REST endpoints consumed by the frontend.
 
 import random
 from datetime import datetime, timedelta, timezone
+
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy.orm import Session
 from sqlalchemy import desc
+from sqlalchemy.orm import Session
 
 from ..database import get_db
 from ..db_models import (
+    AIDecision,
+    CrowdSnapshot,
     DigitalFan,
+    StadiumEvent,
     Volunteer,
     VolunteerTask,
-    CrowdSnapshot,
-    AIDecision,
-    StadiumEvent,
 )
 
 router = APIRouter(prefix="/api/stadium", tags=["stadium"])

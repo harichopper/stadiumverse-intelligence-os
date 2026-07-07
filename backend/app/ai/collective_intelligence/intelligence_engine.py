@@ -4,19 +4,19 @@ The core engine that finds minimal interventions with maximum positive impact
 """
 
 import logging
-from typing import Dict, List, Any, Optional
+from typing import Any, Dict, List, Optional
 
+from ...config import settings
+from ..debate.debate_chamber import DebateChamber
+from ..providers.factory import get_global_ai_provider
 from .impact_models import (
-    InterventionProposal,
     ImpactAssessment,
-    ROIAnalysis,
-    InterventionType,
     ImpactCategory,
+    InterventionProposal,
+    InterventionType,
+    ROIAnalysis,
 )
 from .intervention_calculator import InterventionCalculator
-from ..providers.factory import get_global_ai_provider
-from ..debate.debate_chamber import DebateChamber
-from ...config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -142,7 +142,7 @@ Your task: Identify the smallest, most targeted interventions that could have th
 
 Look for opportunities in:
 1. Volunteer deployment - Move 1-2 people for maximum effect
-2. Gate operations - Open/close specific gates strategically  
+2. Gate operations - Open/close specific gates strategically
 3. Queue management - Small adjustments with big wait time reductions
 4. Communication - Single announcements that solve multiple problems
 5. Resource allocation - Redistribute existing resources optimally

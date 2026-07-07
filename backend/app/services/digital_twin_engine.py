@@ -6,30 +6,46 @@ Updates every 5 seconds with predictive behavior modeling
 
 import asyncio
 import logging
-import random
 import math
+import random
 from datetime import datetime, timedelta
-from typing import List, Dict, Any, Optional, Tuple
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
+from typing import Any, Dict, List, Optional, Tuple
 
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
+from ..config import STADIUM_ZONES, settings
 from ..database import AsyncSessionLocal
 from ..db_models import (
     DigitalFan,
     FanMovement,
     FanPrediction,
 )
-from ..models.fan import (
-    FanEmotion,
-    PredictionType,
-)
-from ..config import settings, STADIUM_ZONES
-# pyrefly: ignore [missing-import]
-from ..ai.llm.openai_client import OpenAIClient
-# pyrefly: ignore [missing-import]
-from ..ai.agents.navigation_agent import NavigationAgent
 
 logger = logging.getLogger(__name__)
+
+
+# ── Inline enums (avoids PostgreSQL-specific model import) ────────────────────
+class FanEmotion:
+    EXCITED = "excited"
+    JOYFUL = "joyful"
+    ANGRY = "angry"
+    STRESSED = "stressed"
+    CONFUSED = "confused"
+    TIRED = "tired"
+    FEARFUL = "fearful"
+    NEUTRAL = "neutral"
+
+
+class PredictionType:
+    MOVEMENT = "movement"
+    PURCHASE = "purchase"
+    RESTROOM = "restroom"
+    EXIT = "exit"
+    EMERGENCY = "emergency"
+    QUEUE = "queue"
+
+
 
 
 class DigitalTwinEngine:
@@ -218,7 +234,7 @@ class DigitalTwinEngine:
         return updated_fans
 
     async def _update_single_fan(
-        self, session: AsyncSession, fan: DigitalFan
+        self, session: Session, fan: DigitalFan
     ) -> Optional[Dict[str, Any]]:
         """Update a single digital twin with AI predictions"""
 
@@ -434,7 +450,7 @@ class DigitalTwinEngine:
         return (new_x, new_y)
 
     async def _move_fan(
-        self, session: AsyncSession, fan: DigitalFan, new_location: Tuple[float, float]
+        self, session: Session, fan: DigitalFan, new_location: Tuple[float, float]
     ):
         """Move fan to new location"""
         # Update fan location
@@ -483,7 +499,7 @@ class DigitalTwinEngine:
         fan.risk_score = int(min(100, sum(risk_factors)))
 
     async def _generate_fan_predictions(
-        self, session: AsyncSession, fan: DigitalFan
+        self, session: Session, fan: DigitalFan
     ) -> List[FanPrediction]:
         """Generate AI predictions for fan behavior"""
         predictions = []
@@ -650,7 +666,7 @@ class DigitalTwinEngine:
                 if random.random() < 0.3:  # 30% chance to return to neutral
                     fan.current_emotion = FanEmotion.NEUTRAL
 
-    async def _save_movement_history(self, session: AsyncSession, fan: DigitalFan):
+    async def _save_movement_history(self, session: Session, fan: DigitalFan):
         """Save fan movement to history for analysis"""
 
         movement = FanMovement(

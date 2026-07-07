@@ -5,20 +5,20 @@ Calculates best/likely/worst future scenarios using AI and data modeling
 
 import asyncio
 import logging
-from typing import Dict, List, Any, Optional
-from datetime import datetime, timedelta
 import random
+from datetime import datetime, timedelta
+from typing import Any, Dict, List, Optional
 
-from .scenario_models import (
-    FutureBranch,
-    BranchType,
-    TimelinePoint,
-    ScenarioOutcome,
-    OutcomeCategory,
-    FutureBranchSet,
-)
-from ..providers.factory import get_global_ai_provider
 from ...config import settings
+from ..providers.factory import get_global_ai_provider
+from .scenario_models import (
+    BranchType,
+    FutureBranch,
+    FutureBranchSet,
+    OutcomeCategory,
+    ScenarioOutcome,
+    TimelinePoint,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -167,7 +167,7 @@ Analyze the BEST POSSIBLE outcome where:
 Analyze the MOST LIKELY outcome based on:
 - Historical patterns and normal operations
 - Typical fan behavior and response rates
-- Standard resource efficiency levels  
+- Standard resource efficiency levels
 - Expected minor delays and variations
 - Realistic intervention success rates
 - Normal external factor influences

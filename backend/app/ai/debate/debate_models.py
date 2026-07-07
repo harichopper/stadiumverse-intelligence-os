@@ -5,9 +5,9 @@ Data structures for AI agent debate and decision making
 
 import uuid
 from dataclasses import dataclass, field
-from typing import Dict, List, Any, Optional
 from datetime import datetime
 from enum import Enum
+from typing import Any, Dict, List, Optional
 
 
 class AgentRole(str, Enum):

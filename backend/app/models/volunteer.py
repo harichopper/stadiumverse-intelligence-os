@@ -3,23 +3,24 @@ StadiumVerse AI - Volunteer Models
 Models for volunteer management and task coordination
 """
 
+import enum
+import uuid
+
+from geoalchemy2 import Geometry
 from sqlalchemy import (
-    Column,
-    String,
-    Integer,
-    Boolean,
-    DateTime,
-    Text,
-    ForeignKey,
     ARRAY,
+    Boolean,
+    Column,
+    DateTime,
     Float,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
 )
-from sqlalchemy.dialects.postgresql import UUID, ENUM
+from sqlalchemy.dialects.postgresql import ENUM, UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
-from geoalchemy2 import Geometry
-import uuid
-import enum
 
 from ..database import Base
 

@@ -4,13 +4,14 @@ Local AI provider using Ollama for offline operation
 """
 
 import json
-import time
 import logging
-from typing import List, Dict, Any, Optional, AsyncGenerator
-import aiohttp
+import time
+from typing import Any, AsyncGenerator, Dict, List, Optional
 from urllib.parse import urljoin
 
-from .base import AIProvider, AIResponse, AIMessage, MessageRole
+import aiohttp
+
+from .base import AIMessage, AIProvider, AIResponse, MessageRole
 
 logger = logging.getLogger(__name__)
 

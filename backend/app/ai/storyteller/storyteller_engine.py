@@ -4,12 +4,12 @@ Transforms technical data and predictions into natural language narratives
 """
 
 import logging
-from typing import Dict, List, Any
 from enum import Enum
+from typing import Any, Dict, List
 
-from ..providers.factory import get_global_ai_provider
-from ..debate.debate_models import DebateSession
 from ..collective_intelligence.impact_models import InterventionProposal
+from ..debate.debate_models import DebateSession
+from ..providers.factory import get_global_ai_provider
 
 logger = logging.getLogger(__name__)
 
@@ -47,20 +47,20 @@ class StorytellerEngine:
         return {
             "crowd_prediction": {
                 NarrativeStyle.PROFESSIONAL: """
-Based on current analysis, we anticipate {fan_count} fans will move toward {location} within {timeframe}. 
-Current projections indicate {impact_description}. 
+Based on current analysis, we anticipate {fan_count} fans will move toward {location} within {timeframe}.
+Current projections indicate {impact_description}.
 Recommended action: {recommendation} to optimize flow and maintain safety standards.
 Confidence level: {confidence}%
 """,
                 NarrativeStyle.CASUAL: """
-Heads up team - we're expecting about {fan_count} fans heading to {location} in the next {timeframe}. 
+Heads up team - we're expecting about {fan_count} fans heading to {location} in the next {timeframe}.
 {impact_description}
 Here's what we should do: {recommendation}
 We're {confidence}% confident this will work well.
 """,
                 NarrativeStyle.BROADCAST: """
-Attention stadium guests: To ensure your comfort and safety, we recommend {recommendation}. 
-Current wait times at {location} are approximately {wait_time} minutes. 
+Attention stadium guests: To ensure your comfort and safety, we recommend {recommendation}.
+Current wait times at {location} are approximately {wait_time} minutes.
 Thank you for your cooperation.
 """,
             },
@@ -146,7 +146,7 @@ Current Trajectory: {current_path}
 Projected Outcome: {projected_outcome}
 
 Best Case: {best_case_description}
-Expected Case: {likely_case_description}  
+Expected Case: {likely_case_description}
 Worst Case: {worst_case_description}
 
 Critical Decision Points: {decision_points}
@@ -156,7 +156,7 @@ Contingency Triggers: {contingency_conditions}
                 NarrativeStyle.BROADCAST: """
 Stadium Update:
 
-Current conditions are {current_conditions}. 
+Current conditions are {current_conditions}.
 {time_reference}, we expect {expected_conditions}.
 {public_recommendation}
 

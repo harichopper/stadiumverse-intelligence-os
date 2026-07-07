@@ -3,10 +3,11 @@ StadiumVerse AI V2 - Simplified Database Configuration
 SQLite database setup for development without complex dependencies
 """
 
+import os
+
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-import os
 
 # Create SQLite engine with a simple file database
 DATABASE_PATH = "stadiumverse.db"

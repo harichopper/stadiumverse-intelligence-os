@@ -3,11 +3,11 @@ StadiumVerse AI V2 - Future Scenario Models
 Data structures for multi-branch future predictions
 """
 
+import uuid
 from dataclasses import dataclass, field
-from typing import List, Dict, Any, Optional
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
+from typing import Any, Dict, List, Optional
 
 
 class BranchType(str, Enum):

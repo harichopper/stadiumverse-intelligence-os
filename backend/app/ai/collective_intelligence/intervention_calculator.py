@@ -4,17 +4,17 @@ Calculates optimal interventions with maximum ROI and minimal resource usage
 """
 
 import logging
-from typing import Dict, List, Any, Tuple
-from datetime import datetime
 from dataclasses import dataclass
+from datetime import datetime
+from typing import Any, Dict, List, Tuple
 
-from .impact_models import (
-    InterventionProposal,
-    ROIAnalysis,
-    InterventionType,
-    ImpactCategory,
-)
 from ..providers.factory import get_global_ai_provider
+from .impact_models import (
+    ImpactCategory,
+    InterventionProposal,
+    InterventionType,
+    ROIAnalysis,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -166,7 +166,7 @@ Analyze the potential cascading effects of this intervention:
 
 Provide numerical estimates (0.0 to 1.0) for:
 - Queue reduction cascade
-- Staff efficiency cascade  
+- Staff efficiency cascade
 - Fan satisfaction cascade
 - Safety improvement cascade
 - Revenue impact cascade

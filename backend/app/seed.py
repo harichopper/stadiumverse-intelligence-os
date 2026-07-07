@@ -6,9 +6,11 @@ Populates SQLite with realistic demo data for FIFA World Cup 2026 match scenario
 import math
 import random
 from datetime import datetime, timedelta
+
 from sqlalchemy.orm import Session
+
 from .database import SessionLocal
-from .db_models import DigitalFan, Volunteer, CrowdSnapshot, AIDecision, StadiumEvent
+from .db_models import AIDecision, CrowdSnapshot, DigitalFan, StadiumEvent, Volunteer
 
 FANS_DATA = [
     (

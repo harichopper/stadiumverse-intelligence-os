@@ -22,11 +22,12 @@ StadiumVerse Intelligence OS is an AI-powered platform that transforms a FIFA Wo
 > *What if the stadium itself could think, debate, predict, and act?*
 
 The system addresses every dimension of the Smart Stadiums challenge:
-- 🏟️ **Real-time crowd flow intelligence** — gate density monitoring, congestion prediction
-- 👥 **Digital twin network** — individual AI models for every fan, volunteer, and zone
-- 🧠 **Multi-agent decision engine** — 4 specialized AI agents debate before every intervention
-- ⚡ **Minimum-intervention principle** — finds the smallest action with maximum positive impact
-- 🔮 **Predictive analytics** — up to 30-minute lookahead across multiple scenario branches
+- 🏟️ **Real-time crowd flow intelligence & Crowd Management** — gate density monitoring, congestion prediction to minimize **wait times**
+- 👥 **Digital twin network & Fan Experience** — individual AI models for every fan, volunteer, and zone to elevate the **fan experience**
+- 🧠 **Multi-agent decision engine** — 4 specialized AI agents debate before every intervention for maximum **efficiency**
+- ⚡ **Minimum-intervention principle & Scalability** — finds the smallest action with maximum positive impact, ensuring **sustainable operations** and massive **scalability**
+- 🔮 **Predictive Analytics & Data-Driven Ops** — up to 30-minute lookahead across multiple scenario branches
+- 🛡️ **Security & Infrastructure** — proactive perimeter monitoring and automated anomaly detection
 - ♿ **Inclusive design** — accessibility-first UI meeting WCAG AA standards
 
 ---
